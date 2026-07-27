@@ -43,6 +43,11 @@ cold fetch, that pause is normal." Then run:
 npx hyperframes doctor --json
 ```
 
+**Read the payload's individual checks, NOT the top-level `ok` field.** Doctor reports
+`ok: false` when OPTIONAL capabilities (whisper, TTS, music, Docker) are absent — that is
+normal and fine. Gate ONLY on the render-required checks: **Node, Chrome, FFmpeg/FFprobe,
+disk**. If those pass, preflight passes, whatever the top-level flag says.
+
 Also confirm ffmpeg directly (doctor covers it, but check explicitly so the failure
 message is precise):
 
@@ -337,7 +342,9 @@ Build a minimal one-frame HyperFrames composition in `PROOF_DIR`:
    "Here's your brand as a frame — <world> field, <type> headline, <accent> on '<the
    accent word>'."
 
-If the snapshot fails, run `npx hyperframes doctor` and `npx hyperframes check`, report the
+Do NOT run `npx hyperframes check` on the proof composition — it is a deliberate still,
+and the checker flags motionless frames (`sweep_static`) as an error. `snapshot` is the
+verification for this one frame. If the snapshot fails, run `npx hyperframes doctor`, report the
 finding with its fix (not a stack trace), and still proceed to consent — the brand file is
 already written and valuable on its own.
 

@@ -36,7 +36,7 @@ there is nothing to install ahead of time beyond Node 22+ and ffmpeg.
 | 1. Treatment | Becomes the brief. HyperFrames' intent interview / `BRIEF.md` is already answered by your treatment — hand it over instead of re-interviewing from scratch. |
 | 2. Style direction | Picks the workflow route. Short motion-first card → the motion-graphics route; longer narrative/product film → the product-launch route. When unsure, take the LIGHTER route and build directly against the composition contract rather than running heavy narrative ceremony. |
 | 3. Boardomatic | The beat table drives the composition's timeline (clip timing, cuts on beat/VO boundaries). |
-| 4. Styleframes | `npx hyperframes init` a project, build the still frame, render it with `npx hyperframes snapshot` (or a one-frame render), then Read the image and art-direct it. |
+| 4. Styleframes | Scaffold first (`npx hyperframes init` inside the piece's `composition/` folder), build the still frame, render it with `npx hyperframes snapshot` (skip `check` on deliberate stills — it flags motionless frames), then Read the image and art-direct it. |
 | 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. **Verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors. |
 | 6. QC | **Render with `npx hyperframes render`** for the MP4, then extract stills at each beat and verify against the delivery spec. |
 
@@ -88,7 +88,7 @@ user add it (via `/brand-init`, or by hand — see the template). Examples:
 
 ## Where artifacts live
 
-One folder per piece: `video-work/<slug>/`. Inside it:
+One folder per piece: `video-work/<slug>/`. Inside it (note: HyperFrames may write renders into `composition/renders/` — copy the FINAL file up to the piece's `renders/` so deliverables live in one place):
 
 - `treatment.md`, `boards.md` — the direction docs (treatment through boardomatic).
 - `styleframes/` — the still-frame explorations (A/B pairs).

@@ -22,7 +22,7 @@ decisions on the record instead of the model's statistical average. It directs;
 Two commands inside Claude Code:
 
 ```
-/plugin marketplace add ./video-direction
+/plugin marketplace add /path/to/video-direction-plugin
 /plugin install video-direction@video-direction
 ```
 
