@@ -3,6 +3,10 @@
 > One-line description of the brand and who it is for. This file is the source of truth
 > for every video. Fill in every `[bracket]`; delete the guidance notes as you go.
 > Minimal but sufficient beats long and vague — a tight brand file makes tighter videos.
+>
+> `/brand-init` writes this file for you and adds a `status:` frontmatter header
+> (`incomplete` while the interview is mid-flight, `complete` when done). A hand-written
+> file can skip the frontmatter entirely — its absence means complete.
 
 ## Constants (every video keeps these)
 
@@ -24,13 +28,23 @@
 
 ## Styles / roster (pick by message type)
 
-1. **[Style name]** — `[message type it serves]`. `[length, aspect, static-card vs
-   narrative-scenes, the ONE signature move]`. `[how it ends]`.
-2. **[Style name]** — `[message type]`. `[length]`, `[look and motion in a line]`.
-3. **[Style name]** — `[message type]`. `[length]`, `[look and motion in a line]`.
+The five archetypes, each tuned to a message type. `/brand-init` instantiates all five in
+your brand's terms; by hand, fill each skeleton with your world, type, accent, and register.
+The neutral spec (skeleton, audio default, length, variant axes, kind) lives in
+`skills/video-direction/references/style-archetypes.md` — that is the single source; do not
+invent new styles here.
 
-_Mark each style narrative or static:_ narrative styles get the story-spine check;
-static/stacked-info styles get the lighter hierarchy check. Note which is which.
+1. **Launch Film** — new product / launch / milestone. `[length, the ONE signature move,
+   how it ends]`. [narrative]
+2. **Mechanism Explainer** — how it works, step by step. `[length, look and motion]`. [narrative]
+3. **Kinetic Essay** — a take / argument / POV line. `[length, look and motion]`. [narrative]
+4. **Announcement Card** — a date / price / event / one CTA, one held frame. `[length, look
+   and motion]`. [static]
+5. **Content Hero** — a post / quote / stat repurposed for the feed. `[length, look and
+   motion]`. [static]
+
+_Each entry is tagged narrative or static:_ narrative styles get the story-spine check;
+static/stacked-info styles get the lighter hierarchy check.
 
 ## Selection rules (when the message type is ambiguous)
 
@@ -64,12 +78,17 @@ SCALE REFERENCE (delete before use) — a filled example, roughly the size to ai
 - Register. Calm, precise, unhurried. No hype words.
 
 ## Styles
-1. Launch Card — a new product/date. ≤12s, square, STATIC card (wordmark top, headline,
-   details list, CTA), one animated charm element. Ends on the wordmark. [static]
-2. Product Story — 20-30s, how it works. Scene per idea, gentle cuts. [narrative]
+1. Launch Film — new product/milestone. 20-30s, cold-open hook → the thing → one proof →
+   wordmark resolve, eased push-in on the reveal. [narrative]
+2. Mechanism Explainer — how it works. 20-40s, panel per step, one accent traces the path. [narrative]
+3. Kinetic Essay — a POV line. 15-25s, serif kinetic type, one accent word per beat. [narrative]
+4. Announcement Card — a date/price/CTA. ≤12s, square, STATIC card (wordmark top, headline,
+   details, CTA), one animated charm. Ends on the wordmark. [static]
+5. Content Hero — a quote/stat for the feed. 8-15s, hero line, sound-off legible. [static]
 
 ## Selection rules
-- Announcement/date → Launch Card. Explanation → Product Story. Default: Launch Card.
+- Announcement/date → Announcement Card. How-it-works → Mechanism Explainer. New product →
+  Launch Film. A take → Kinetic Essay. A repurposed post → Content Hero. Default: Announcement Card.
 
 ## Audio
 - Bed: quiet instrumental. VO: none, type-led. Silent permitted? Yes — render silent and note it.

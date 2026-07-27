@@ -37,10 +37,12 @@ subscription.
 
 ## Your first video in 3 steps
 
-1. **Make a brand file.** `/brand-init` will do this for you soon; for now, copy
-   `templates/motion-brand-template.md` to `motion-brand.md` in your project and fill it
-   in (about 20 minutes by hand). It is the source of truth for every video.
-2. **Ask for a video** in plain language — "make a launch card for X," pointing at real
+1. **Run `/brand-init`.** A short taste-by-comparison interview — mostly A/B picks (world,
+   type, accent, audio, delivery), about 15 minutes — writes your `motion-brand.md` and
+   renders one proof styleframe in your new brand so you see "that's MY brand" before you
+   make a real video. (Prefer to do it by hand? Copy `templates/motion-brand-template.md`
+   to `motion-brand.md` and fill it in.) It is the source of truth for every video.
+2. **Ask for a video** in plain language — "make a launch film for X," pointing at real
    content (a page, a README, a post). The `video-direction` skill runs treatment →
    style → boards → styleframes and presents a styleframe A/B pair.
 3. **Pick A or B.** It builds, runs the critics, renders, and hands you the MP4 path
@@ -60,6 +62,6 @@ call may pause ~30s while it fetches — that is normal, not a hang.
 
 ## Status
 
-Early. The `video-direction` skill (the studio process) works today. `/brand-init` is a
-stub — write `motion-brand.md` by hand for now — and the automated brand interview is
-coming next.
+Early, but the core loop works. The `video-direction` skill (the studio process) and
+`/brand-init` (the taste-by-comparison brand interview, ending in a proof styleframe) both
+run today. The proof video for the top of this README is what's coming next.

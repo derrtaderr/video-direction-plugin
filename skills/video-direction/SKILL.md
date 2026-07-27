@@ -54,7 +54,11 @@ sections:
 
 - **Constants** — what every video keeps (world/background, type, texture, logo,
   register). Never broken.
-- **Styles / roster** — the named looks, each tied to a message type.
+- **Styles / roster** — the named looks, each tied to a message type. These are the five
+  archetypes (Launch Film, Mechanism Explainer, Kinetic Essay, Announcement Card, Content
+  Hero); their neutral spec — skeleton, audio default, length, variant axes, kind — lives
+  in `references/style-archetypes.md`, the single source both this skill and `/brand-init`
+  read.
 - **Selection rules** — how to pick a style when the message type is ambiguous.
 - **Audio** — bed/VO defaults and whether silent is permitted.
 - **Delivery** — aspect, size budget, sound-off legibility.
@@ -65,7 +69,7 @@ variant axes, never by bending a constant.
 **When a section is missing** (hand-written brand files often lack one): do not assume
 it exists and do not invent a rule the brand did not choose. Infer conservatively from
 the Constants, do the smallest safe thing, note the gap in one line, and suggest the
-user add it (via `/brand-init` once available, or by hand — see the template). Examples:
+user add it (via `/brand-init`, or by hand — see the template). Examples:
 
 - No **selection rules** and the message type is ambiguous → pick the closest style by
   its described message type, name the pick and why, move on. Do not stall asking.
