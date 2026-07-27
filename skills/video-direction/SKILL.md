@@ -49,8 +49,17 @@ aspect (e.g. 1080×1080) in the composition explicitly if the brand calls for it
 ## The brand file — `motion-brand.md`
 
 Read the brand's motion system file FIRST. It lives in the user's project as
-`motion-brand.md` and is the source of truth for every video. It should carry these
-sections:
+`motion-brand.md` and is the source of truth for every video.
+
+**When there is no `motion-brand.md` at all** (empty state): the user has not run
+`/brand-init` yet. Point them there first — the brand file is what stops every video looking
+the same. If they only want a throwaway test before committing to their own brand, offer the
+bundled example: `examples/fern-and-field/motion-brand.md` (a fictional garden-supply brand,
+with a matching sample render alongside it). Copy it in or read it directly, run one video
+against it to see the process, then run `/brand-init` for real. Do not invent a brand
+silently.
+
+A brand file should carry these sections:
 
 - **Constants** — what every video keeps (world/background, type, texture, logo,
   register). Never broken.
