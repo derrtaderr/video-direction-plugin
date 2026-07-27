@@ -126,13 +126,13 @@ thinking it hung. Renders longer than ~60s should surface progress.
    content. Run the **structure check** for the style's kind (below) before timing.
    Music-driven pieces choose the actual track NOW (cuts land on beats); VO pieces lock
    the script now.
-4. **Styleframes** — for flagship pieces (launch films, anything flagged important):
+4. **Styleframes** — NOTE for static single-frame styles (announcement cards, held-frame pieces): stages 4 and 5 naturally collapse — you must build the composition to produce the styleframe, so build the frame first, snapshot it, review it as the styleframe, then finish the motion pass. Say so when it happens; do not pretend two stages ran. For flagship pieces (launch films, anything flagged important):
    render TWO fully-designed still frames of the same hero moment in two directions and
    present them for an A/B pick before building. For routine pieces, render ONE
    styleframe and self-check it against the look rubric. A/B comparison happens on
    STILLS only — never render two videos.
 5. **Build** — the composition, per the build contract below.
-6. **QC** — render the MP4, verify against the delivery spec (duration, aspect, size,
+6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract stills at each beat to
    confirm the frames match the boards.
 
