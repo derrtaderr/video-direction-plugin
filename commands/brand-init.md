@@ -249,6 +249,11 @@ Write the section with `Default bed`, `VO` (derive: A/B → "bed, VO when narrat
 C → "type-led, no VO"), and the `Silent permitted?` line. Include verbatim:
 **"This line wins over any general audio floor."**
 
+Then say one line so they know the premium path exists (no new question): scored audio can
+come from a track you drop into the piece, the free local models (`npx hyperframes tts`),
+or your own ElevenLabs key if you have one (set `ELEVENLABS_API_KEY` and the skill
+generates studio VO or music for you).
+
 → **Write Section 4 now.** `next_section: delivery`.
 
 ### Section 5 → `## Delivery`

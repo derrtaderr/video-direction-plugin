@@ -58,10 +58,13 @@ by accident without saying so. Two ways to add sound:
   voice (`npx hyperframes tts`, Kokoro) and background music (MusicGen). `npx hyperframes
   doctor` lists both; they light up once the local dependencies are installed. Free, and
   nothing leaves your machine.
-- **Or use your own provider.** If you have an ElevenLabs (or similar) account, generate
-  the track with your own key in your own session and save it into `composition/audio/`.
-  The process scores with whatever it finds there. No key is ever bundled with, read by,
-  or sent anywhere by this plugin.
+- **Bring your own ElevenLabs key (the studio upgrade).** Set `ELEVENLABS_API_KEY` in your
+  environment and the skill generates studio voiceover or scored music for you, masters it
+  to broadcast loudness, and drops it into the piece before the render. It runs locally in
+  your own session against your own key. The key is never bundled with this plugin, never
+  read from a file, and never sent anywhere but ElevenLabs. No key set means this tier
+  stays off and the free local path is the default. Any other provider works the manual
+  way too, generate the track yourself and save it into `composition/audio/`.
 
 The house rule — *no video ships silent by accident* — is taught, not enforced: your
 `motion-brand.md` Audio section wins. If it permits silent, a silent render is correct.

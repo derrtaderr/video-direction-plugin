@@ -152,7 +152,14 @@ thinking it hung. Renders longer than ~60s should surface progress.
    type, accent, styles/roster — infer it from what they said). Track the count; it is
    the `rerolls` value QC's telemetry reports. In solo-user mode the pick is a
    self-review, but the bound still caps re-renders.
-5. **Build** — the composition, per the build contract below.
+5. **Build** — the composition, per the build contract below. **Audio sub-step (before
+   the final render):** score the piece per the Audio precedence tiers. If a track is
+   already in `composition/audio/`, use it. Else if the treatment's audio mode is vo or
+   music AND `ELEVENLABS_API_KEY` is set, generate and master the track via
+   `references/audio-elevenlabs.md`, then place it in `composition/audio/` so the render
+   picks it up. Else fall back to keyless-local (`npx hyperframes tts` / MusicGen) or
+   silent per the brand file. Any generation failure falls back and never blocks the
+   render. Record the mode that actually shipped (vo / music / silent) for QC.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract stills at each beat to
    confirm the frames match the boards. Pull the **poster** too — an ffmpeg still of the
@@ -191,13 +198,33 @@ Decide which kind the chosen style is at stage 2 and state it, so the right chec
 
 ### Audio precedence
 
-Teach the audio floor: no shipped video should be silent by accident — a bed or VO
-carries mood and holds attention (ambient site loops excepted). **But the user's brand
-file wins.** If `motion-brand.md` permits silent, a silent render is correct: render it
-silent and add a one-line note ("silent per brand; drop a track at `composition/audio/`
-or generate one with `npx hyperframes tts` to score it"). State it once, plainly. Never
-lecture a user whose own brand chose silence, and never block a render to go source a
-track they did not ask for.
+Teach the audio floor. No shipped video should be silent by accident. A bed or VO carries
+mood and holds attention (ambient site loops excepted). **But the user's brand file
+wins.** If `motion-brand.md` permits silent, a silent render is correct. Render it silent
+and add a one-line note, then move on. Never lecture a user whose own brand chose silence,
+and never block a render to go source a track they did not ask for.
+
+**Three ways a video gets scored, in this order of precedence:**
+
+1. **A drop-in track.** Any audio file already sitting in the piece's
+   `composition/audio/` scores the render as-is. Check this folder first; if a track is
+   there, use it and generate nothing.
+2. **Local keyless models (the default).** HyperFrames ships optional local models for
+   voice (`npx hyperframes tts`, Kokoro) and background music (MusicGen). No key, no
+   account, nothing leaves the machine. This is the default path when no ElevenLabs key
+   is set.
+3. **ElevenLabs premium (the upgrade).** When `ELEVENLABS_API_KEY` is set in the user's
+   environment AND the treatment's audio mode is vo or music, generate studio VO or
+   scored music via `references/audio-elevenlabs.md` (a self-contained recipe the skill
+   runs against the user's own key, exactly like `references/telemetry.md`). This is
+   bring-your-own-key. The key is never bundled and never leaves the user's machine.
+
+The brand file's Audio section governs all three. Keyless-local stays the default when no
+key is present; ElevenLabs is the upgrade chosen when the key is present and the treatment
+calls for VO or scored music. Whichever tier runs, the note for a silent-by-brand render
+still points the user at their options ("silent per brand; drop a track at
+`composition/audio/`, generate one with `npx hyperframes tts`, or set `ELEVENLABS_API_KEY`
+for studio audio").
 
 ## Build contract
 
