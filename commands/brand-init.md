@@ -25,6 +25,7 @@ STATE_DIR              = .video-direction        (telemetry queue + anon id live
 QUEUE_FILE             = .video-direction/telemetry-queue.jsonl
 ANON_ID_FILE           = .video-direction/anon-id
 PROOF_DIR              = video-work/brand-proof   (the finale styleframe project)
+PROOF_TEMPLATE         = templates/proof-frame     (the self-contained still copied into PROOF_DIR)
 ARCHETYPES             = skills/video-direction/references/style-archetypes.md (the roster source)
 ```
 
@@ -398,38 +399,61 @@ Any value the user skipped is written with its default and a trailing `(defaulte
 The file is complete. Now show them their brand as a single frame — the "that's MY brand"
 moment. Announce it: "Building one proof frame in your brand — about 30s, hold on."
 
-Build a minimal one-frame HyperFrames composition in `PROOF_DIR`:
+This frame is the activation moment, so it must NEVER depend on the network. The plugin
+ships a self-contained still template at `PROOF_TEMPLATE` (`templates/proof-frame/`): one
+`index.html` with all CSS inline, CSS generic font keywords that resolve to local fonts
+(no webfont fetch), no CDN scripts, and its own `hyperframes.json` / `meta.json` /
+`package.json` so `snapshot` runs in it. Do NOT hand-author a composition or invoke the
+authoring skill here — copy the template and fill it in:
 
-1. Invoke the `hyperframes` skill to author a single still title card. It uses ONLY the
-   constants just captured:
-   - Background = the chosen World hex.
-   - A short headline set in the chosen Type register (use the brand name or its one-line
-     description — real text from the interview, never lorem).
-   - The wordmark treatment, set as decided.
-   - The accent doing ONE semantic job on the frame (one word, or the CTA line) — obeying
-     the scarcity rule.
-   - Delivery aspect from Section 5.
-   No animation is required — it is a still. One `class="clip"` frame is enough.
-2. Snapshot it:
+1. Copy the whole `PROOF_TEMPLATE` directory into `PROOF_DIR` (create `PROOF_DIR` if
+   missing).
+2. In the copied `index.html`, substitute the documented tokens from the just-written
+   `motion-brand.md`. The template's header comment lists every token; fill each from the
+   Constants and Delivery you captured:
+   - `{{WIDTH}}` / `{{HEIGHT}}` — the Delivery aspect from Section 5.
+   - `{{WORLD_BG}}` — the primary World hex.
+   - `{{INK}}` — the readable text color on that world (near-black on a light world,
+     near-white on a dark one).
+   - `{{ACCENT}}` — the accent hex.
+   - `{{TYPE_STACK}}` — the generic font stack for the chosen Type register (the template
+     lists the editorial / technical / modern options; use ONLY those generic keywords so
+     nothing is fetched).
+   - `{{WORDMARK}}` — the wordmark, set as decided (held neutral here per the logo
+     exemption).
+   - `{{HEADLINE}}` — the brand name or its one-line description, real text from the
+     interview, never lorem.
+   - `{{ACCENT_LINE}}` — the one accent-bearing line (the CTA, or the single key word),
+     the only place the accent appears, so the scarcity rule holds.
+3. Snapshot it, running inside `PROOF_DIR`:
    ```
-   npx hyperframes snapshot
+   npx hyperframes snapshot --frames 1 --no-end
    ```
-   (or a one-frame render if snapshot is unavailable). This produces a PNG in the project.
-3. **Read the PNG** and show the user the path. Say, in one line, what they are looking at:
-   "Here's your brand as a frame — <world> field, <type> headline, <accent> on '<the
+   `snapshot` does NOT need the authoring skill, and the template does not touch the
+   network, so this works offline. It writes a PNG under `snapshots/`.
+4. **Read the PNG** and show the user the path. Say, in one line, what they are looking
+   at: "Here's your brand as a frame — <world> field, <type> headline, <accent> on '<the
    accent word>'."
+
+**If the mascot policy is `character (asset pending)`** (Q8 option C with no sheet in the
+project), the proof frame stays type-only and you add one line: "Your character mascot is
+declared but has no sheet in the project yet, so this frame leaves it out. Add the art and
+it renders." Never draw an improvised character onto the proof frame.
 
 Do NOT run `npx hyperframes check` on the proof composition — it is a deliberate still,
 and the checker flags motionless frames (`sweep_static`) as an error. `snapshot` is the
-verification for this one frame. If the snapshot fails, run `npx hyperframes doctor`, report the
-finding with its fix (not a stack trace), and still proceed to consent — the brand file is
-already written and valuable on its own.
+verification for this one frame. (The template carries `data-no-timeline` on its root, so
+the still needs no animation timeline and the producer does not poll for one.) If the
+snapshot fails, run `npx hyperframes doctor`, report the finding with its fix (not a stack
+trace), and still proceed to consent — the brand file is already written and valuable on
+its own.
 
-**Queue** the completion event now (still not sent — consent is next). Append to
-`QUEUE_FILE`:
+**Queue** the completion event now (still not sent — consent is next). `minutes_elapsed`
+is the whole minutes between the interview-start stamp (Step 2, the first question) and
+the user's last answer — NOT wall-clock from preflight or install. Append to `QUEUE_FILE`:
 
 ```
-{"event":"brandinit_completed","ts":"<ISO8601>","minutes_elapsed":<int since start>,"mascot_policy":"<none|ident|character>"}
+{"event":"brandinit_completed","ts":"<ISO8601>","minutes_elapsed":<int, last-answer minus first-question>,"mascot_policy":"<none|ident|character>"}
 ```
 
 ---

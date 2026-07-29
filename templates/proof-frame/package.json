@@ -1,0 +1,9 @@
+{
+  "name": "brand-proof",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "snapshot": "npx --yes hyperframes snapshot",
+    "render": "npx --yes hyperframes render"
+  }
+}

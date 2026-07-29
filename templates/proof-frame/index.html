@@ -1,0 +1,103 @@
+<!doctype html>
+<!--
+  PROOF-FRAME TEMPLATE — a single self-contained still, no network at render time.
+
+  This is the finale of /brand-init: one frame in the user's new brand. It is a STILL,
+  so it needs no animation library. There are NO external scripts, NO CDN, NO @import,
+  and NO webfont fetch anywhere in this file. Everything renders from inline CSS and CSS
+  generic font keywords that resolve to local fonts, so `npx hyperframes snapshot` works
+  fully offline. The root carries `data-no-timeline` so the producer skips its timeline
+  poll (a still has no timeline to register).
+
+  brand-init substitutes these tokens from the just-written motion-brand.md, then runs
+  `npx hyperframes snapshot`. Every token appears verbatim below:
+
+    {{WIDTH}}       delivery width in px  (square 1080, vertical 1080, widescreen 1920)
+    {{HEIGHT}}      delivery height in px (square 1080, vertical 1920, widescreen 1080)
+    {{WORLD_BG}}    world background hex   (e.g. #F5F3EE)
+    {{INK}}         readable text color on the world (near-black on light, near-white on dark)
+    {{ACCENT}}      accent hex             (e.g. #2E6E6A) — carries ONE meaning on this frame
+    {{TYPE_STACK}}  font stack for the chosen type register. Use ONLY CSS generic and
+                    system keywords so nothing is fetched over the network. HyperFrames
+                    pulls any NAMED family (Georgia, Menlo, Segoe UI, ...) from Google
+                    Fonts at compile time, so a named family would break the offline
+                    guarantee. Generic keywords resolve to local fonts, no fetch:
+                      editorial → ui-serif, serif
+                      technical → ui-monospace, monospace
+                      modern    → system-ui, ui-sans-serif, sans-serif
+    {{WORDMARK}}    wordmark text as it is set (a plain string, or markup with one accent
+                    span if the wordmark carries the accent letter)
+    {{HEADLINE}}    the headline — the brand name or its one-line description, real text
+    {{ACCENT_LINE}} the one accent-bearing line: the CTA or the single key word
+
+  The accent appears exactly once, on {{ACCENT_LINE}}. Keep it that way so the scarcity
+  rule holds. If the wordmark carries the accent letter, hold it neutral here (it becomes
+  the single accent only on a final resolve frame, per the logo exemption).
+-->
+<div
+  id="root"
+  data-composition-id="main"
+  data-start="0"
+  data-width="{{WIDTH}}"
+  data-height="{{HEIGHT}}"
+  data-duration="1"
+  data-no-timeline
+>
+  <section id="frame" class="clip" data-start="0" data-duration="1" data-track-index="1">
+    <div class="world"></div>
+    <div class="stage">
+      <p class="wordmark">{{WORDMARK}}</p>
+      <h1 class="headline">{{HEADLINE}}</h1>
+      <p class="accent-line">{{ACCENT_LINE}}</p>
+    </div>
+  </section>
+</div>
+
+<style>
+  #root {
+    position: relative;
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+  }
+  /* World fills a child, never the root. */
+  .world {
+    position: absolute;
+    inset: 0;
+    background-color: {{WORLD_BG}};
+  }
+  .stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6%;
+    padding: 9% 8%;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: {{TYPE_STACK}};
+    color: {{INK}};
+  }
+  .wordmark {
+    margin: 0;
+    font-size: 3.2vmin;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .headline {
+    margin: 0;
+    font-size: 9vmin;
+    line-height: 1.06;
+    font-weight: 600;
+    max-width: 84%;
+  }
+  .accent-line {
+    margin: 0;
+    font-size: 3.6vmin;
+    letter-spacing: 0.04em;
+    color: {{ACCENT}};
+  }
+</style>
