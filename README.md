@@ -1,11 +1,11 @@
 # Video Direction
 
-A studio process for AI-built brand videos — stops every video looking the same.
+A studio process for AI-built brand videos. Stops every video looking the same.
 
 You can one-shot-prompt a brand video in a minute, and it will look like every other
 one-shot-prompted video, because nothing forced a look decision. This plugin is the
-director's seat you skipped. It runs a staged studio process — treatment, style, boards,
-styleframes, build, QC — with a gate at each stage, so the look, timing, and sound are
+director's seat you skipped. It runs a staged studio process (treatment, style, boards,
+styleframes, build, QC) with a gate at each stage, so the look, timing, and sound are
 decisions on the record instead of the model's statistical average. It directs;
 [HyperFrames](#prerequisites) renders.
 
@@ -22,14 +22,12 @@ decisions on the record instead of the model's statistical average. It directs;
 Two commands inside Claude Code:
 
 ```
-/plugin marketplace add /path/to/video-direction-plugin
+/plugin marketplace add derrtaderr/video-direction-plugin
 /plugin install video-direction@video-direction
 ```
 
-<!-- Once published to GitHub, install straight from the repo instead:
-/plugin marketplace add derrtaderr/video-direction-plugin
-/plugin install video-direction@video-direction
--->
+Working from a local clone instead? Point the first command at the folder:
+`/plugin marketplace add /path/to/video-direction-plugin`
 
 The install copies everything into your own Claude Code config, so it keeps working even
 if you delete the downloaded folder. It runs entirely on your machine and your Claude
