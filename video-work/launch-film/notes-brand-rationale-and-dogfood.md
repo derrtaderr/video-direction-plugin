@@ -91,3 +91,20 @@ entirely from disk.
     this repo (consent was never asked or given during this dogfood), so per telemetry.md
     `render_complete` was a silent no-op — zero network calls. The no-consent path behaves
     exactly as specced.
+
+## Dogfood findings — revision round (exhibit swap + maker's mark)
+
+14. **The returning-brand path worked end to end on a second brand.** Steepwell's ledger
+    row (winter-oolong) drove the new piece's stage-2 axis rotation exactly as designed —
+    the compounding story is real, not aspirational. The brand file's constants contained
+    "recipe book" without any off-file freelancing (the card is a prop ON the world, so
+    the World constant holds).
+15. **Two more real catches by `check` before render:** `content_overlap` (recipe title
+    ascenders into the eyebrow at 69 samples) and `gsap_css_transform_conflict` (CSS
+    `transform: scaleX(0)` + GSAP scaleX tween would discard the CSS transform — initial
+    state must be `gsap.set` outside the timeline). Both fixed pre-render; zero wasted
+    renders this round.
+16. **Character-sheet reuse was frictionless.** `hacker-sprites.js` dropped into the
+    composition as a local script and `buildHackerSprite` + stepped `tl.set` pose swaps
+    satisfied both the sheet's own laws (pixels never tween) and HyperFrames determinism
+    with no adaptation.

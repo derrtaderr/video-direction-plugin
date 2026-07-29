@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" data-resolution="square">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Steepwell — Winter Oolong, a steeping recipe</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      html, body {
+        margin: 0; padding: 0; width: 1080px; height: 1080px; overflow: hidden;
+        background-color: #F5F3EE;
+        font-family: "EB Garamond", serif;
+      }
+      #main-composition { position: relative; width: 1080px; height: 1080px; overflow: hidden; }
+
+      /* subtle paper grain, matched to the warm world */
+      .grain {
+        position: absolute; inset: 0; pointer-events: none; z-index: 100; opacity: 0.05;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        background-size: 200px 200px;
+      }
+
+      .serif { font-family: "EB Garamond", serif; }
+      .sans  { font-family: "Inter", sans-serif; }
+
+      /* ---- the recipe card: an aged clipping pasted on the world ---- */
+      #card {
+        position: absolute; left: 120px; top: 96px; width: 840px; height: 888px;
+        background: #F1E9D8; /* aged cream, deeper than the world */
+        border-radius: 6px;
+        box-shadow: 0 14px 40px rgba(60, 45, 20, 0.16), 0 2px 8px rgba(60, 45, 20, 0.10);
+        transform: rotate(-1.2deg);
+      }
+      /* dashed ink cut-out border, inset like a clipped recipe */
+      #card::after {
+        content: ""; position: absolute; inset: 22px;
+        border: 2px dashed #4A4238; border-radius: 4px; opacity: 0.55;
+      }
+      /* faint age stain rings */
+      #card::before {
+        content: ""; position: absolute; inset: 0; border-radius: 6px;
+        background:
+          radial-gradient(140px 110px at 82% 12%, rgba(150, 110, 40, 0.07), rgba(0,0,0,0) 70%),
+          radial-gradient(180px 150px at 12% 88%, rgba(150, 110, 40, 0.06), rgba(0,0,0,0) 70%);
+      }
+
+      .card-inner { position: absolute; inset: 22px; padding: 44px 56px; box-sizing: border-box; }
+
+      #sw-header {
+        color: #2B2620; font-size: 30px; letter-spacing: 2px;
+      }
+      #corner-mark {
+        position: absolute; top: 46px; right: 58px;
+        font-family: "Inter", sans-serif; font-size: 16px; letter-spacing: 1.5px;
+        color: #6B5E4C; text-transform: uppercase;
+      }
+      #eyebrow {
+        margin-top: 52px; font-family: "Inter", sans-serif; font-size: 17px;
+        letter-spacing: 3px; color: #6B5E4C; text-transform: uppercase;
+      }
+      #title {
+        margin-top: 30px; color: #211D17; font-size: 86px; line-height: 1.04;
+        font-style: italic; font-weight: 500;
+      }
+      .rule { height: 2px; background: #4A4238; opacity: 0.35; margin-top: 26px; }
+
+      .ing {
+        color: #2B2620; font-size: 31px; line-height: 1.0;
+        padding: 17px 0 15px; border-bottom: 1px solid rgba(74, 66, 56, 0.28);
+      }
+      .steps { margin-top: 26px; }
+      .step { color: #2B2620; font-size: 31px; line-height: 1.7; }
+      .step .n { font-family: "Inter", sans-serif; font-size: 22px; color: #6B5E4C; margin-right: 12px; }
+
+      /* punchline — the single amber element on the card */
+      #steep-time {
+        position: absolute; left: 56px; bottom: 52px;
+        color: #A96F1E; font-size: 46px; font-style: italic;
+      }
+      #steep-time b { font-weight: 600; font-style: normal; }
+
+      /* ink teacup + steam (charm) + botanical sprig, lower right */
+      #cup { position: absolute; right: 70px; bottom: 44px; }
+      #sprig { position: absolute; right: 54px; top: 300px; opacity: 0.75; }
+
+      /* ---- dark resolve frame ---- */
+      #resolve {
+        position: absolute; inset: 0; background: #20242B;
+      }
+      #resolve .wm {
+        position: absolute; top: 470px; left: 0; width: 1080px; text-align: center;
+        color: #EDE7DA; font-size: 84px; font-weight: 500;
+      }
+      #resolve .wm b { color: #C6862E; font-weight: 500; }
+      #resolve .url {
+        position: absolute; top: 590px; left: 0; width: 1080px; text-align: center;
+        font-family: "Inter", sans-serif; font-size: 24px; letter-spacing: 2px; color: #8B8E96;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="main-composition"
+      data-composition-id="main"
+      data-width="1080"
+      data-height="1080"
+      data-start="0"
+      data-duration="11.5"
+    >
+      <!-- the card (0–9.2) -->
+      <div id="card" class="clip" data-start="0" data-duration="9.2" data-track-index="1">
+        <div class="card-inner">
+          <div id="sw-header" class="serif">Steepwell</div>
+          <div id="corner-mark">No. 12 &middot; the seasonal box</div>
+          <div id="eyebrow">A steeping recipe</div>
+          <div id="title" class="serif">Winter Oolong</div>
+          <div class="rule" id="title-rule"></div>
+          <div id="ing-1" class="serif ing">2 tsp loose leaf, single origin</div>
+          <div id="ing-2" class="serif ing">250 ml water, just off the boil</div>
+          <div class="steps">
+            <div id="step-1" class="serif step"><span class="n">1.</span>Warm the pot.</div>
+            <div id="step-2" class="serif step"><span class="n">2.</span>Steep, unhurried.</div>
+            <div id="step-3" class="serif step"><span class="n">3.</span>Pour.</div>
+          </div>
+          <div id="steep-time" class="serif"><b>3 minutes</b>, no more</div>
+
+          <!-- ink botanical sprig (still) -->
+          <svg id="sprig" width="120" height="150" viewBox="0 0 120 150" fill="none">
+            <path d="M60 145 C58 100 62 60 78 18" stroke="#4A4238" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M69 92 C48 88 38 72 40 54 C58 60 68 74 69 92 Z" stroke="#4A4238" stroke-width="2.5" fill="none"/>
+            <path d="M67 62 C60 44 62 30 74 16 C84 30 80 48 67 62 Z" stroke="#4A4238" stroke-width="2.5" fill="none"/>
+            <path d="M72 118 C88 114 98 102 100 86 C84 90 74 102 72 118 Z" stroke="#4A4238" stroke-width="2.5" fill="none"/>
+          </svg>
+
+          <!-- ink teacup + the steam charm -->
+          <svg id="cup" width="150" height="130" viewBox="0 0 150 130" fill="none">
+            <!-- steam curl (the ONE charm — draws itself) -->
+            <path id="steam" d="M62 62 C56 50 66 44 60 33 C55 24 63 18 60 8"
+                  stroke="#4A4238" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- cup body -->
+            <path d="M28 76 L110 76 L102 116 C100 122 96 124 90 124 L48 124 C42 124 38 122 36 116 Z"
+                  stroke="#2B2620" stroke-width="3.5" fill="none"/>
+            <path d="M110 82 C124 82 128 96 116 102 L106 106" stroke="#2B2620" stroke-width="3.5" fill="none"/>
+            <path d="M22 129 L118 129" stroke="#2B2620" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- dark resolve (9.2–11.5) -->
+      <div id="resolve" class="clip" data-start="9.2" data-duration="2.3" data-track-index="2">
+        <div class="wm serif">Steep<b>well</b></div>
+        <div class="url">steepwell.co</div>
+      </div>
+
+      <div class="grain"></div>
+
+      <script>
+        // ONE ease system for every entrance.
+        const EASE = "power2.out";
+        const STEAM_LEN = 80; // path length upper bound for the dash draw
+
+        // CSS-independent initial states are set via fromTo; steam uses dash draw.
+        const tl = gsap.timeline({ paused: true });
+
+        // card settles in, slightly askew
+        tl.fromTo("#card", { opacity: 0, y: 34, rotate: -2.6 },
+                          { opacity: 1, y: 0, rotate: -1.2, duration: 0.55, ease: EASE }, 0.0);
+
+        // reading order: header/corner → eyebrow+title → rule → ingredients → steps
+        tl.fromTo("#sw-header",   { opacity: 0 }, { opacity: 1, duration: 0.4, ease: EASE }, 0.5);
+        tl.fromTo("#corner-mark", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: EASE }, 0.6);
+        tl.fromTo("#eyebrow", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 1.0);
+        tl.fromTo("#title",   { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: EASE }, 1.15);
+        tl.fromTo("#title-rule", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.5, ease: EASE }, 1.5);
+        tl.fromTo("#ing-1", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 2.0);
+        tl.fromTo("#ing-2", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 2.45);
+        tl.fromTo("#step-1", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 3.6);
+        tl.fromTo("#step-2", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 4.05);
+        tl.fromTo("#step-3", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 4.5);
+
+        // sprig + cup arrive quietly with the steps zone
+        tl.fromTo("#sprig", { opacity: 0 }, { opacity: 0.75, duration: 0.6, ease: EASE }, 3.8);
+        tl.fromTo("#cup",   { opacity: 0 }, { opacity: 1, duration: 0.5, ease: EASE }, 5.0);
+
+        // the ONE charm: the steam curl draws itself
+        tl.fromTo("#steam", { strokeDasharray: STEAM_LEN, strokeDashoffset: STEAM_LEN },
+                            { strokeDashoffset: 0, duration: 1.1, ease: EASE }, 5.4);
+
+        // punchline LAST — the single amber element
+        tl.fromTo("#steep-time", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: EASE }, 6.2);
+
+        // resolve frame content is static (hard cut via clip window); wordmark eases once
+        tl.fromTo("#resolve .wm",  { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: EASE }, 9.25);
+        tl.fromTo("#resolve .url", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: EASE }, 9.6);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      </script>
+    </div>
+  </body>
+</html>

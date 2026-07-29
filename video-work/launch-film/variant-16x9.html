@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>video-direction — launch film</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/hacker-sprites.js"></script>
     <style>
       html, body {
         margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hidden;
@@ -146,10 +147,10 @@
                    data-start="30" data-duration="6.5" data-media-start="12" data-track-index="5"></video>
           </div>
           <div id="frame-2" class="frame">
-            <video id="v-steepwell-a" class="clip" muted preload="auto" src="assets/steepwell.mp4"
+            <video id="v-steepwell-a" class="clip" muted preload="auto" src="assets/steepwell-recipe.mp4"
                    data-start="17.5" data-duration="6.5" data-media-start="0" data-track-index="6"></video>
-            <video id="v-steepwell-b" class="clip" muted preload="auto" src="assets/steepwell.mp4"
-                   data-start="30" data-duration="6.5" data-media-start="8" data-track-index="7"></video>
+            <video id="v-steepwell-b" class="clip" muted preload="auto" src="assets/steepwell-recipe.mp4"
+                   data-start="30" data-duration="6.5" data-media-start="2.5" data-track-index="7"></video>
           </div>
           <div id="frame-3" class="frame">
             <video id="v-fern-a" class="clip" muted preload="auto" src="assets/fern-and-field.mp4"
@@ -191,6 +192,15 @@
         <div id="resolve-sub" class="clip mono resolve-sub" data-start="38.2" data-duration="3.8" data-track-index="22">
           Free &middot; your keys &middot; your machine
         </div>
+
+        <!-- maker's mark · the pixel hacker (derr.ai surface signature; house mascot policy stays none) -->
+        <div id="hacker" class="clip" data-start="37.9" data-duration="4.1" data-track-index="23"
+             style="position:absolute; left:352px; top:512px; width:84px; height:119px; opacity:0;">
+          <div id="hacker-stand" style="position:absolute; inset:0;"></div>
+          <div id="hacker-point" style="position:absolute; inset:0; visibility:hidden;"></div>
+        </div>
+        <div id="install-underline" class="clip" data-start="38.8" data-duration="3.2" data-track-index="24"
+             style="position:absolute; left:465px; top:602px; width:990px; height:2px; background:#F4EFE6; opacity:0.85; transform-origin:0 50%;"></div>
       </div>
 
       <div class="grain"></div>
@@ -258,6 +268,18 @@
         tl.fromTo("#wordmark", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: EASE }, 36.8);
         tl.fromTo("#install-line", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: EASE }, 37.6);
         tl.fromTo("#resolve-sub", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: EASE }, 38.4);
+
+        // maker's mark — canonical sheet poses, P=7 desk-toy scale; pixels never tween,
+        // pose swaps are stepped tl.set; the emitted effect (the underline the point
+        // "draws" under the install line) carries the verb: he directs the eye to it.
+        gsap.set("#install-underline", { scaleX: 0 }); // immediate initial state (not in the paused timeline)
+        const HS = window.HACKER_SHEET;
+        HS.buildHackerSprite(document.getElementById("hacker-stand"), "walkB", 7);
+        HS.buildHackerSprite(document.getElementById("hacker-point"), "point", 7);
+        tl.to("#hacker", { opacity: 1, duration: 0.4, ease: EASE }, 37.9);
+        tl.set("#hacker-stand", { visibility: "hidden" }, 38.7);
+        tl.set("#hacker-point", { visibility: "visible" }, 38.7);
+        tl.to("#install-underline", { scaleX: 1, duration: 0.7, ease: EASE }, 38.8);
 
         window.__timelines = window.__timelines || {};
         window.__timelines["main"] = tl;

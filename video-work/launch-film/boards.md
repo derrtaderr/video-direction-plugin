@@ -51,3 +51,12 @@ punched into on their evidence beats. Master 16:9 1920×1080, ~42s, silent/type-
 Silent per `motion-brand.md` (silent permitted, type-led). Render silent; the on-screen
 type and the framed exhibits carry it. To score it, drop a low, unhurried gallery-room bed
 into `composition/audio/` — the house default, never a track that performs.
+
+## Amendment (2026-07-28, post-review)
+
+- **Evidence 2 content:** the framed Steepwell clip is now `steepwell-recipe-card` (the
+  recipe-book Announcement Card, directed at `video-work/steepwell-recipe-card/`), media
+  window 0-6.5s; thesis window media 2.5-9s. Beat structure, placard, and the ask quote
+  unchanged.
+- **Resolve beat addition:** the pixel hacker maker's mark (stand → point, stepped) plus
+  the emitted bone underline under the install line, 37.9s → end. See style.md.

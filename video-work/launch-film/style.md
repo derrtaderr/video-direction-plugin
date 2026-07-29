@@ -58,3 +58,23 @@ arrives all at once, revealed lines hold ~2.5s.
 accent hue), so it does not compete with a second colored accent — no logo-exemption path.
 The only rule to hold: on the resolve frame, the install line is the single bone accent and
 the wordmark sits in the same bone family without a second brighter element stealing it.
+
+**Direction revision (2026-07-28, post-review).** Two notes from Jason, routed as the QC
+"change X" path (treatment and boards stand):
+
+1. **Evidence-2 exhibit replaced.** The winter-oolong launch clip read as words on paper
+   beside Ledgerline ("how is that a warm cookbook?"). A new Steepwell piece was directed
+   through the plugin's returning-brand path (`video-work/steepwell-recipe-card/`, axes
+   rotated off the winter-oolong ledger row) — an Announcement Card recipe-book card that
+   embodies the ask visibly. Film windows: evidence media 0-6.5s (assembly through the
+   amber punchline), thesis media 2.5-9s (assembled card). The placard and the persona's
+   ask quote are unchanged.
+2. **Maker's mark at the resolve (house mascot policy stays none).** The pixel hacker —
+   Jason's owned-surface signature (GitHub + derr.ai), canonical character sheet, P=7
+   desk-toy scale per the canon deck's mascot modes — enters ONLY on the resolve beat,
+   left of the install line. Craft rule 6: he swaps stand → point (stepped tl.set, pixels
+   never tween) and the emitted effect is the bone underline drawing under the install
+   line from his arm — the "directing" verb, literally directing the eye to the install
+   line, which stays the point. The underline is part of the install line's meaning unit
+   (no second accent); the character's one orange glint pixel is his identity mark, scoped
+   to this maker's-mark exemption.
