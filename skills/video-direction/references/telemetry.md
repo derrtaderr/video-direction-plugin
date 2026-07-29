@@ -7,7 +7,7 @@ or never asked.
 ## Constants (single source — brand-init.md uses the same values)
 
 ```
-ENDPOINT      = https://derr.ai/api/plugin-events
+ENDPOINT      = https://www.derr.ai/api/plugin-events
 STATE_DIR     = .video-direction
 QUEUE_FILE    = .video-direction/telemetry-queue.jsonl
 ANON_ID_FILE  = .video-direction/anon-id

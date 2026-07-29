@@ -17,7 +17,7 @@ only brand in play is the user's.
 ## Constants (edit here, nowhere else)
 
 ```
-PLUGIN_EVENTS_ENDPOINT = https://derr.ai/api/plugin-events
+PLUGIN_EVENTS_ENDPOINT = https://www.derr.ai/api/plugin-events
 BRAND_FILE             = motion-brand.md        (in the user's current project root)
 LEDGER_FILE            = style-ledger.md        (project root; scaffolded from templates/style-ledger-template.md)
 MATRIX_FILE            = delivery-matrix.md     (project root; scaffolded from templates/delivery-matrix-template.md)
