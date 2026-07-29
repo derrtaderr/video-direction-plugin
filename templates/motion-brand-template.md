@@ -63,6 +63,10 @@ static/stacked-info styles get the lighter hierarchy check.
 - Aspect / size: `[e.g. square 1080×1080 for social; ≤ [N] MB]`.
 - `[Must read with sound off / captions where words carry]`.
 
+_Shipping one master to several places (site hero + feed + vertical)? The per-destination
+spec table lives in `templates/delivery-matrix-template.md` — copy it into your project and
+each destination gets its own aspect, length, and finish._
+
 ---
 
 <!--

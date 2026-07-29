@@ -95,6 +95,9 @@ One folder per piece: `video-work/<slug>/`. Inside it (note: HyperFrames may wri
 - `composition/` — the HyperFrames project (index.html, assets).
 - `renders/` — the final MP4 and poster.
 
+A skeleton for the per-piece direction docs (the `treatment.md` and `boards.md`
+structures plus this folder contract) is at `templates/production-doc-template.md`.
+
 State everything to disk as you go. The `.md` files and the composition ARE the memory;
 a run that dies mid-way resumes from the last stage on disk, not from chat.
 
@@ -121,7 +124,10 @@ thinking it hung. Renders longer than ~60s should surface progress.
    none, pick the closest style and say why. Do not ask.
 2. **Style direction** — name the style from the roster, list the 2–3 signature moves
    this video uses, and note the variant axes chosen (so repeat videos vary
-   deliberately). This pick also selects the HyperFrames workflow route.
+   deliberately). This pick also selects the HyperFrames workflow route. If the brand
+   keeps a **style ledger** (`templates/style-ledger-template.md` — one row per shipped
+   video), read its recent rows for this style here: skip a stale repeat and rotate the
+   variant axes off what the last piece did. Append a row at QC.
 3. **Boardomatic** — the beat table: one row per beat with start time, role, and
    content. Run the **structure check** for the style's kind (below) before timing.
    Music-driven pieces choose the actual track NOW (cuts land on beats); VO pieces lock

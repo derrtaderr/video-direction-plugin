@@ -245,7 +245,10 @@ C → "type-led, no VO"), and the `Silent permitted?` line. Include verbatim:
 - Not sure → **A**.
 
 Write `Aspect / size` (chosen aspect, size budget default `≤ 10 MB`) and the legibility
-line — default **"Must read with sound off; captions where words carry."**
+line — default **"Must read with sound off; captions where words carry."** If the user
+says they ship one master to several destinations, point them at the per-destination spec
+template — `templates/delivery-matrix-template.md` — to copy into their project; do not
+expand Section 5 into a full matrix here.
 
 → **Write Section 5 now**, then set `status: complete` and remove `next_section` (see
 format below). All ten questions are done; only consent remains, after the proof frame.
