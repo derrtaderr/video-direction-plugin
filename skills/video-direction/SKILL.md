@@ -124,10 +124,13 @@ thinking it hung. Renders longer than ~60s should surface progress.
    none, pick the closest style and say why. Do not ask.
 2. **Style direction** — name the style from the roster, list the 2–3 signature moves
    this video uses, and note the variant axes chosen (so repeat videos vary
-   deliberately). This pick also selects the HyperFrames workflow route. If the brand
-   keeps a **style ledger** (`templates/style-ledger-template.md` — one row per shipped
-   video), read its recent rows for this style here: skip a stale repeat and rotate the
-   variant axes off what the last piece did. Append a row at QC.
+   deliberately). This pick also selects the HyperFrames workflow route. Read the
+   project's **`style-ledger.md`** here (one row per shipped video; `/brand-init`
+   scaffolds it from `templates/style-ledger-template.md`): vary the variant axes
+   against the recent rows and never repeat the last video's combination — and cite the
+   ledger in one line when you do ("last card was centered, seedling charm — going
+   left-aligned, accent on the CTA"). No ledger on disk (a hand-written brand setup)?
+   Note it once, suggest copying the template in, and continue.
 3. **Boardomatic** — the beat table: one row per beat with start time, role, and
    content. Run the **structure check** for the style's kind (below) before timing.
    Music-driven pieces choose the actual track NOW (cuts land on beats); VO pieces lock
@@ -143,7 +146,12 @@ thinking it hung. Renders longer than ~60s should surface progress.
 5. **Build** — the composition, per the build contract below.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract stills at each beat to
-   confirm the frames match the boards.
+   confirm the frames match the boards. On a successful render, **append one row to the
+   project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
+   Style, Audio, Camera, Hero techniques, New capabilities tried, Destinations, Perf
+   note) — the piece's slug, its style and kind of audio/camera actually shipped, and
+   the destinations it went to. No ledger on disk? Note it once (same posture as a
+   missing brand-file section) and continue.
 
 ### Structure check — scope it to the style's kind
 

@@ -7,9 +7,11 @@ own aspect, length, and finish. Declare a piece's destinations at treatment (sta
 every declared variant at QC (stage 6). Author the master once — always the widest aspect,
 16:9 1920×1080 — and cut variants from it, never author them separately.
 
-Copy this file to your project (e.g. `video-work/delivery-matrix.md`) and edit the rows to
-your real destinations. The rows below are a common starting set; keep the ones you ship
-to, drop the rest. Delete this guidance block once you've read it.
+`/brand-init` scaffolds this into your project root as `delivery-matrix.md`, beside
+`motion-brand.md`, pre-filling the rows your delivery answers map to; setting up by hand,
+copy it there yourself. Either way, edit the rows to your real destinations — the rows
+below are a common starting set; keep the ones you ship to, drop the rest. Delete this
+guidance block once you've read it (`/brand-init` strips it when scaffolding).
 
 | Destination | Aspect | Length ceiling | Audio reality | Captions | Size budget | Texture (grain/grade) |
 |---|---|---|---|---|---|---|

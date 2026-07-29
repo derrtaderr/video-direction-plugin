@@ -19,6 +19,8 @@ only brand in play is the user's.
 ```
 PLUGIN_EVENTS_ENDPOINT = https://derr.ai/api/plugin-events
 BRAND_FILE             = motion-brand.md        (in the user's current project root)
+LEDGER_FILE            = style-ledger.md        (project root; scaffolded from templates/style-ledger-template.md)
+MATRIX_FILE            = delivery-matrix.md     (project root; scaffolded from templates/delivery-matrix-template.md)
 STATE_DIR              = .video-direction        (telemetry queue + anon id live here)
 QUEUE_FILE             = .video-direction/telemetry-queue.jsonl
 ANON_ID_FILE           = .video-direction/anon-id
@@ -251,7 +253,22 @@ template — `templates/delivery-matrix-template.md` — to copy into their proj
 expand Section 5 into a full matrix here.
 
 → **Write Section 5 now**, then set `status: complete` and remove `next_section` (see
-format below). All ten questions are done; only consent remains, after the proof frame.
+format below).
+
+**Then scaffold the two companion files** next to `BRAND_FILE`, from the shipped
+templates. Skip either file that already exists — never overwrite one:
+
+- **`LEDGER_FILE`** from `templates/style-ledger-template.md` — the table header, the
+  column definitions, and the empty **Observations** / **Capability watch** stubs, with
+  the template's copy-me guidance block removed. No rows: the skill appends the first row
+  when the first video ships (its QC stage).
+- **`MATRIX_FILE`** from `templates/delivery-matrix-template.md` — the destination table
+  and the Rules section verbatim, guidance block removed. Pre-fill from the Section 5
+  answers where they map: the row(s) matching the chosen delivery format carry the chosen
+  aspect, the size budget, and the sound-off legibility line; rows the answers do not
+  touch keep the template defaults.
+
+All ten questions are done; only consent remains, after the proof frame.
 
 ---
 
@@ -406,7 +423,9 @@ the honest serverless path from `metrics.md`.
 
 Point at the door, always naming the next command so the flow never dead-ends:
 
-> Your brand system is at `motion-brand.md`, and there's a proof frame in
+> Your brand system is at `motion-brand.md`, with `style-ledger.md` (one row per shipped
+> video — it gains its first row when your first video ships) and `delivery-matrix.md`
+> (your per-destination specs) beside it, and there's a proof frame in
 > `video-work/brand-proof/`. When you're ready, just ask me for your first video in plain
 > language — "make a launch film for <thing>", pointing at real content (a page, a README,
 > a post) — and I'll build it in this brand.
@@ -420,7 +439,9 @@ Point at the door, always naming the next command so the flow never dead-ends:
    regenerate, never silent overwrite).
 3. Ten questions, five sections, A/B where it's taste, "not sure" → `(defaulted)`, write
    after each section with `status: incomplete`.
-4. Set `status: complete` → build + show the proof styleframe → queue `brandinit_completed`.
+4. Set `status: complete` → scaffold `style-ledger.md` + `delivery-matrix.md` from the
+   templates (never overwriting existing ones) → build + show the proof styleframe →
+   queue `brandinit_completed`.
 5. Consent question (last).
 6. Yes → write anon id, flush queue via curl `|| true`. No → delete queue, zero network.
 7. Close: "ask me for your first video."

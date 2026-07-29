@@ -1,8 +1,9 @@
 # Style ledger
 
 One row per shipped video — the memory that keeps a brand's videos from repeating
-themselves. Optional, but the moment you ship more than a handful of pieces it is what
-stops every Launch Film looking like the last one.
+themselves. `/brand-init` scaffolds this into your project root as `style-ledger.md`,
+beside `motion-brand.md`; setting up by hand, copy it there yourself. Either way it is
+what stops every Launch Film looking like the last one.
 
 **How the process uses it:**
 
@@ -13,8 +14,8 @@ stops every Launch Film looking like the last one.
   never appeared is a candidate to try next.
 - At **QC (stage 6)**, after the render passes, append one row for the piece just shipped.
 
-Copy this file to your project (e.g. `video-work/style-ledger.md`) and append as you ship.
-Delete this guidance block once you've read it.
+Append as you ship. Delete this guidance block once you've read it (`/brand-init` strips
+it when scaffolding).
 
 | Date | Video | Tier | Style | Audio | Camera | Hero techniques | New capabilities tried | Destinations | Perf note |
 |---|---|---|---|---|---|---|---|---|---|

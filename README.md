@@ -70,8 +70,9 @@ Next: set your audio default in `/brand-init` (the Audio question), then ask for
 
 Once your `motion-brand.md` exists you don't re-run setup to make more videos — just ask
 for one in plain language. The `video-direction` skill detects the brand file, skips
-straight to the treatment, and (if you keep a style ledger) reads it so the new piece
-doesn't repeat the last one's look.
+straight to the treatment, and reads your `style-ledger.md` (`/brand-init` writes it
+beside the brand file; the skill appends a row per shipped video) so video 2 varies the
+variant axes and never repeats video 1's look.
 
 To change the brand itself, re-run `/brand-init`. With a brand file already present it
 never silently overwrites: it offers a **targeted edit** (re-ask just one section —
