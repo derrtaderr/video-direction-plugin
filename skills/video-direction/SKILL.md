@@ -130,7 +130,10 @@ thinking it hung. Renders longer than ~60s should surface progress.
    render TWO fully-designed still frames of the same hero moment in two directions and
    present them for an A/B pick before building. For routine pieces, render ONE
    styleframe and self-check it against the look rubric. A/B comparison happens on
-   STILLS only — never render two videos.
+   STILLS only — never render two videos. Present the candidate frames beside the canon
+   reference frame the chosen style anchors to (the archetype's teardown in
+   `references/canon-deck.md`, when one exists), so the pick is judged against a
+   known-good standard, not in a vacuum.
 5. **Build** — the composition, per the build contract below.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract stills at each beat to
@@ -197,7 +200,8 @@ chose silence, and never block a render to go source a track they did not ask fo
   never moves, style drift between scenes, default-font reflexes, decoration-only
   accent, more than the brand's allowed accent per frame, containers nested more than
   ~2 deep, off-register energy. Compare the frame side-by-side with the style's canon
-  reference if one is named, and against the brand constants.
+  reference if one is named (canon references live in `references/canon-deck.md` — the
+  teardown for the archetype the piece anchors to), and against the brand constants.
 - **Timing critic** (after boards): every beat earns its seconds; cuts land on beat/VO
   boundaries; total fits the runtime budget; the hook lands inside 2 seconds; and — for
   narrative styles — the story spine holds (read the beats as a chain, flag "and then"

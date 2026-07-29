@@ -21,6 +21,7 @@ See the skill's **Structure check** section.
 ## 1. Launch Film
 
 - **For:** announcing a new product, feature, company, or milestone — the flagship piece.
+- **Canon:** the Claude Code in-app browser launch teardown in `references/canon-deck.md`.
 - **Kind:** narrative (story-spine).
 - **Length:** 20–40s.
 - **Skeleton:** cold-open hook (a state or a question, no logo yet) → the problem it
@@ -37,6 +38,7 @@ See the skill's **Structure check** section.
 ## 2. Mechanism Explainer
 
 - **For:** showing how something works, step by step — the "here's the machine" piece.
+- **Canon:** the Vaults feature clip teardown in `references/canon-deck.md`.
 - **Kind:** narrative (story-spine), but panel/diagram scenes may hold a static camera
   (the camera-move rule targets single-window screen-recording sameness, not composed
   diagram scenes).
@@ -55,6 +57,7 @@ See the skill's **Structure check** section.
 
 - **For:** a point of view, an argument, a manifesto line — text-forward, the "here's what
   I think" piece.
+- **Canon:** none yet — add a teardown to `references/canon-deck.md`.
 - **Kind:** narrative (story-spine). The argument is the spine; compress the argument, not
   just the best lines.
 - **Length:** 15–30s.
@@ -70,6 +73,7 @@ See the skill's **Structure check** section.
 ## 4. Announcement Card
 
 - **For:** one held frame with a fact to land — a date, a price, an event, a single CTA.
+- **Canon:** the Build Day announcement card teardown in `references/canon-deck.md`.
 - **Kind:** static (hierarchy check). Do not force "but/therefore" onto a card; run the
   reading-order check instead.
 - **Length:** ≤12s.
@@ -88,6 +92,7 @@ See the skill's **Structure check** section.
 
 - **For:** turning a post, quote, stat, or testimonial into a branded social clip — the
   content atom, the highest-frequency piece.
+- **Canon:** none yet — add a teardown to `references/canon-deck.md`.
 - **Kind:** static (hierarchy check) by default; a light narrative build is allowed when
   the quote has a turn in it.
 - **Length:** 8–20s.
