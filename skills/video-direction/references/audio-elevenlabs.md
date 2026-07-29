@@ -20,12 +20,22 @@ whole tier is a no-op. The skill falls back to keyless-local or silent per the A
 precedence in SKILL.md, and says one plain line about it. No key, no ElevenLabs call,
 ever.
 
+**Key handling (read before running any call).** This is a public plugin handling
+strangers' keys, so the key gets one handling path with no exceptions. It is read from
+the environment only, passed to curl through **stdin** (never as a command argument),
+never written to disk, and never sent anywhere but `api.elevenlabs.io`. The stdin rule
+closes a real exposure. A key passed as `-H "xi-api-key: $KEY"` expands into curl's
+argument list, and argv is visible in `ps` to every other user on the machine while the
+call runs. Feeding the auth header on stdin with `-H @-` keeps the key out of argv, so
+`ps` never shows it. Every call below follows this form. The request body (`-d …`) stays
+on argv because the VO script and music prompt are not secret. Only the key moves off.
+
 ## Constants (single source)
 
 ```
 API_BASE      = https://api.elevenlabs.io/v1
 KEY           = $ELEVENLABS_API_KEY          # from the user's environment; absent → tier off
-AUTH_HEADER   = xi-api-key: $ELEVENLABS_API_KEY
+AUTH_ON_STDIN = printf 'xi-api-key: %s\r\n' "$ELEVENLABS_API_KEY" | curl … -H @-   # key on stdin, never argv
 DEFAULT_VOICE = 21m00Tcm4TlvDq8ikWAM         # ElevenLabs public default (Rachel); override per brand/treatment
 DEFAULT_TTS_MODEL = eleven_multilingual_v2
 TARGET_LUFS   = -14                          # integrated loudness after master
@@ -65,9 +75,10 @@ read).
 from the brand file if it names one, else `DEFAULT_VOICE`.
 
 ```bash
-curl -s -m "$CURL_TIMEOUT" -X POST \
+# Key on stdin via -H @- so it never enters curl's argv (invisible to `ps`).
+printf 'xi-api-key: %s\r\n' "$ELEVENLABS_API_KEY" | curl -s -m "$CURL_TIMEOUT" -X POST \
   "https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID:-21m00Tcm4TlvDq8ikWAM}" \
-  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H @- \
   -H "Content-Type: application/json" \
   -o /tmp/vo-raw.mp3 \
   -d '{
@@ -112,9 +123,10 @@ piece cuts to the beat.
 **2. Generate the bed.**
 
 ```bash
-curl -s -m "$CURL_TIMEOUT" -X POST \
+# Key on stdin via -H @- so it never enters curl's argv (invisible to `ps`).
+printf 'xi-api-key: %s\r\n' "$ELEVENLABS_API_KEY" | curl -s -m "$CURL_TIMEOUT" -X POST \
   "https://api.elevenlabs.io/v1/music" \
-  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H @- \
   -H "Content-Type: application/json" \
   -o /tmp/music-raw.mp3 \
   -d '{
@@ -172,8 +184,9 @@ Verify a key works before trusting a run. This lists the account's voices and pr
 `HTTP 200` on a good key:
 
 ```bash
-curl -s -m 20 -o /dev/null -w "HTTP %{http_code}\n" \
-  "https://api.elevenlabs.io/v1/voices" -H "xi-api-key: $ELEVENLABS_API_KEY"
+# Same stdin discipline as the real calls; the key never touches argv.
+printf 'xi-api-key: %s\r\n' "$ELEVENLABS_API_KEY" | curl -s -m 20 -o /dev/null \
+  -w "HTTP %{http_code}\n" "https://api.elevenlabs.io/v1/voices" -H @-
 ```
 
 `HTTP 200` means the key is live. `401` means it is bad or unset. Anything else is a
