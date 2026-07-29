@@ -90,13 +90,15 @@ user add it (via `/brand-init`, or by hand — see the template). Examples:
 
 One folder per piece: `video-work/<slug>/`. Inside it (note: HyperFrames may write renders into `composition/renders/` — copy the FINAL file up to the piece's `renders/` so deliverables live in one place):
 
-- `treatment.md`, `boards.md` — the direction docs (treatment through boardomatic).
+- `treatment.md`, `style.md`, `boards.md` — the direction docs (treatment, the stage-2
+  style direction, and the boardomatic).
 - `styleframes/` — the still-frame explorations (A/B pairs).
 - `composition/` — the HyperFrames project (index.html, assets).
 - `renders/` — the final MP4 and poster.
 
-A skeleton for the per-piece direction docs (the `treatment.md` and `boards.md`
-structures plus this folder contract) is at `templates/production-doc-template.md`.
+A skeleton for the per-piece direction docs (the `treatment.md`, `style.md`, and
+`boards.md` structures plus this folder contract) is at
+`templates/production-doc-template.md`.
 
 State everything to disk as you go. The `.md` files and the composition ARE the memory;
 a run that dies mid-way resumes from the last stage on disk, not from chat.

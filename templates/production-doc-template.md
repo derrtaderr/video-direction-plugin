@@ -10,7 +10,8 @@ One folder per piece. Inside it:
 
 ```
 video-work/<slug>/
-├── treatment.md      the ONE idea through the boardomatic — see below
+├── treatment.md      the ONE idea, arc, budget, audio, destinations — see below
+├── style.md          the stage-2 style direction — see below
 ├── boards.md         the beat table — see below
 ├── styleframes/      still-frame explorations (A/B pairs for flagship pieces)
 ├── composition/      the HyperFrames project (index.html, assets)
@@ -47,6 +48,29 @@ right structure check runs at boards>
 
 If the message type is ambiguous, pick per the brand's selection rules; if there are
 none, pick the closest style and say why. Do not stall asking.
+
+---
+
+## `style.md` (stage 2)
+
+The style direction on the record — the look decisions the boards and build obey:
+
+```
+# Style direction — <slug>
+
+**Style from the roster:** <archetype name + the brand's name for it, if different>.
+**Kind: <narrative | static>** → <story-spine check | hierarchy check>.
+
+**Signature moves (2–3 chosen):** <the moves this video uses, numbered — each one
+concrete: what moves, what the accent does, where the eye lands>
+
+**Variant axes chosen (so repeat videos vary deliberately):** <one line per axis from
+the archetype — which value this piece takes, varied against the ledger's recent rows>
+```
+
+Add any brand-rule resolution the frame needs stated (e.g. the logo-exemption call when
+the accent wordmark and an accent element would share a frame), and the one ease system
+the build will reuse.
 
 ---
 

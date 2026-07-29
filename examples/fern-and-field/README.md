@@ -7,6 +7,9 @@ following the `video-direction` skill end to end.
 - **`motion-brand.md`** — a filled brand file in the current template contract: five sections,
   all five style archetypes tuned to the brand, the audio line (silent permitted), and the
   logo/wordmark accent-exemption resolved.
+- **`style-ledger.md`** — the brand's ledger with its one real row (the sample render), plus
+  an observation the next video's style pick should weigh. This is the file the skill reads
+  at stage 2 and appends to at QC.
 - **`sample-video.mp4`** — a ~11s square Launch Card (Announcement Card archetype) for the
   Seedling Subscription. Silent per the brand's audio line. Reads with sound off.
 - **`video-work/seedling-subscription-launch/`** — the intermediates the skill produced:
