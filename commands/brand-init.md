@@ -35,11 +35,15 @@ Record a start timestamp the moment this command begins (used later for
 
 ## Step 0 — Preflight (ALWAYS first, before any question)
 
-Never collect answers on a machine that cannot render. Run preflight before question 1,
-on every invocation.
+Never collect answers on a machine that cannot render, and never let a later step point
+at a skill that was never installed. Preflight runs before question 1 on every
+invocation, in three parts in this order: **browser ensure → skills update → the
+required-checks gate.** It fixes what it can with a single command and stops ONLY on a
+real, user-decision failure.
 
-Announce it: "Checking your machine can render (Chrome, ffmpeg, Node) — about 30s on a
-cold fetch, that pause is normal." Then run:
+Announce it: "Getting your machine ready to render (Chrome, ffmpeg, Node, and the render
+skills). This can take a minute on a cold fetch, that pause is normal." Then run the
+doctor:
 
 ```
 npx hyperframes doctor --json
@@ -48,36 +52,71 @@ npx hyperframes doctor --json
 **Read the payload's individual checks, NOT the top-level `ok` field.** Doctor reports
 `ok: false` when OPTIONAL capabilities (whisper, TTS, music, Docker) are absent — that is
 normal and fine. Gate ONLY on the render-required checks: **Node, Chrome, FFmpeg/FFprobe,
-disk**. If those pass, preflight passes, whatever the top-level flag says.
+disk**.
 
-Also confirm ffmpeg directly (doctor covers it, but check explicitly so the failure
-message is precise):
+**Part 1 — Browser (auto-fix, no user decision).** If the Chrome / Chrome Headless Shell
+check is missing, do NOT stop and do NOT ask. Its remedy is one non-interactive command,
+about 40s, with nothing for the user to decide. Announce "Fetching the render browser,
+about 40s." and run:
+
+```
+npx hyperframes browser ensure
+```
+
+Then re-run `npx hyperframes doctor --json` and read the Chrome check again. Only if the
+ensure itself fails (Chrome still missing) do you fall through to the manual stop below.
+
+**Part 2 — Skills update (always).** The video build steps invoke the HyperFrames
+authoring skill, which is NOT bundled with this plugin and is absent after a fresh
+install. Install or refresh it now so no later step dead-ends. Announce "Installing the
+render skills." and run:
+
+```
+npx hyperframes skills update
+```
+
+This is best-effort. If it fails, note it in one line and continue. The proof frame in
+Step 3 renders with `snapshot`, which does NOT need the authoring skill, so the run still
+finishes, and the user can re-run this before their first real video.
+
+**Part 3 — The required-checks gate.** Re-read the doctor checks (Node, Chrome,
+FFmpeg/FFprobe, disk). Also confirm ffmpeg directly so the failure message is precise:
 
 ```
 ffmpeg -version
 ```
 
+For any required check still failing, split by remedy type:
+
+- **Auto-fixable (a single non-interactive command, like the browser above)** → announce
+  it, run it, re-check, and only stop if it still fails.
+- **User-decision (a Node upgrade, or an ffmpeg install that needs a package manager)** →
+  the user has to choose and run this, so stop with the exact per-OS command.
+
 **Queue the preflight result now** (consent has not been asked yet, so you cannot send it
-— append it to the local queue and it flushes later only if the user consents). Create
-`STATE_DIR` if missing and append one line to `QUEUE_FILE`:
+— append it to the local queue and it flushes later only if the user consents). Record
+the result AFTER the auto-fixes above. Create `STATE_DIR` if missing and append one line
+to `QUEUE_FILE`:
 
 ```
 {"event":"preflight_result","ts":"<ISO8601>","os":"<darwin|linux|win32>","pass":<true|false>,"missing_dep":"<none|ffmpeg|chrome|node|...>"}
 ```
 
-**On failure** — print the exact install command for the user's OS, then stop with
-"Fix that, then re-run `/brand-init`." Do not start the interview. Per-OS fixes:
+**On a user-decision failure** — print the exact install command for the user's OS, then
+stop with "Fix that, then re-run `/brand-init`." Do not start the interview. Per-OS fixes:
 
 - **ffmpeg**
   - macOS: `brew install ffmpeg`
   - Debian/Ubuntu: `sudo apt-get update && sudo apt-get install -y ffmpeg`
   - Windows: `winget install Gyan.FFmpeg` (or `choco install ffmpeg`)
 - **Node 22+** (doctor reports the version): install via nvm — `nvm install 22 && nvm use 22`, or from nodejs.org.
-- **Chrome / Chromium** (doctor names it): `npx playwright install chromium`, or install Google Chrome.
 
-Print only the lines for what doctor actually flagged. Then stop.
+Print only the lines for what doctor actually flagged. Then stop. (Chrome is not on this
+list — Part 1 already auto-fixes it; it reaches a manual stop only if `browser ensure`
+itself failed, in which case name that.)
 
-**On pass** — say "Machine's good to render." and continue to state detection.
+**On pass** — say "Machine's good to render, skills installed." and continue to state
+detection.
 
 ---
 
