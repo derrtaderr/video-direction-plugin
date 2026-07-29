@@ -46,6 +46,13 @@ invent new styles here.
 _Each entry is tagged narrative or static:_ narrative styles get the story-spine check;
 static/stacked-info styles get the lighter hierarchy check.
 
+**Mascot / performing element.** `[none / an ident or charm mark that animates / a
+character]`. A character mascot renders from its own artwork, never improvised, so it
+needs the asset present in this project: record the path here (e.g.
+`character: assets/mascot/sheet.png`). Until that art is in the project, mark it
+`character (asset pending)` — frames leave the character out with one explicit note
+rather than inventing one.
+
 ## Selection rules (when the message type is ambiguous)
 
 - `[If the ask reads like X → pick style 1. If it reads like Y → pick style 2.]`

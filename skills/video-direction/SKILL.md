@@ -75,6 +75,16 @@ A brand file should carry these sections:
 Constants are never broken. Differentiation happens between styles and along the
 variant axes, never by bending a constant.
 
+**Mascot handling.** The brand's mascot policy is one of: none, an ident/charm mark, or a
+character. A character mascot renders from its own artwork (a character sheet or sprite),
+never improvised — its geometry comes from the sheet, never a guess. So a character mascot
+needs its asset present in the project. When the brand file names a character asset path,
+use it. When the policy reads `character (asset pending)` (declared, no sheet in the
+project), OMIT the character from every frame and say so in one line ("character mascot
+declared but no sheet in the project; add one to include it"). Never draw an improvised
+character to fill the gap. An ident/charm mark, by contrast, is geometry you can build
+(a mark that draws itself, a charm that reacts).
+
 **When a section is missing** (hand-written brand files often lack one): do not assume
 it exists and do not invent a rule the brand did not choose. Infer conservatively from
 the Constants, do the smallest safe thing, note the gap in one line, and suggest the

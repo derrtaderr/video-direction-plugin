@@ -29,8 +29,8 @@ PROOF_TEMPLATE         = templates/proof-frame     (the self-contained still cop
 ARCHETYPES             = skills/video-direction/references/style-archetypes.md (the roster source)
 ```
 
-Record a start timestamp the moment this command begins (used later for
-`minutes_elapsed`).
+The interview's start timestamp is stamped later, at the first question (Step 2), NOT
+here. Preflight and any install time must not count toward `minutes_elapsed`.
 
 ---
 
@@ -151,6 +151,12 @@ by this file and nothing else.
 
 ## Step 2 — The interview
 
+**Stamp the interview start NOW**, at the first question you ask the user (Q1 for a fresh
+run, or the first re-asked question for a returning `edit`). This is the ONLY timestamp
+`minutes_elapsed` counts from — preflight, browser/skills installs, and state detection
+happened before it and must not count. `minutes_elapsed` at the end is the last-answer
+time minus this first-question time.
+
 Ten questions across the five sections of the brand file, in order, plus one consent
 question at the very end (Step 5). Rules that hold for every question:
 
@@ -204,18 +210,27 @@ the number, the CTA. What's yours? Give me a hex (like `#2E6E6A`) or just descri
   `(defaulted)` (e.g. paper → a deep teal; terminal → a neon `#3DF5C0`; studio → a
   confident blue `#2F6BFF`).
 
-**Contrast guard (run after the pick, before writing it).** Compute the WCAG contrast
-ratio of the accent against the chosen World background. At 3:1 or better, say nothing
-and move on. Below 3:1, one plain sentence — no lecture:
+**Contrast guard (run after the pick, before writing it).** Check the accent against
+EVERY world background in the Constants, not just one. Most brands here are two-world by
+default (the primary world plus the dark closing frame from Q2), and an accent that reads
+on one can vanish on the other. Gather the full list of world backgrounds named in
+Section 1 (primary world, and any second / emphasis world), compute the WCAG contrast
+ratio of the accent against each, and report the ratio per world.
 
-> Heads up — `<hex>` on your `<world>` background is `<ratio>`:1, under the 3:1 line
-> where accent text stops reading. `<adjusted hex>` is the same hue, just
-> `<darker/lighter>`, and clears it. Keep yours or take the adjusted one?
+If the accent clears 3:1 on every world, say nothing and move on. If it is under 3:1 on
+ANY world, name each failing world in one plain sentence — no lecture:
+
+> Your accent `<hex>` reads fine on your `<passing world>` (`<ratio>`:1) but drops to
+> `<ratio>`:1 on your `<failing world>`, under the 3:1 line where accent text stops
+> reading. `<adjusted hex>` is the same hue, just `<darker/lighter>`, and clears it on
+> both. A two-world brand can also keep the accent and shift it to a per-world shade so
+> each world gets one that reads. Keep yours, take the adjusted one, or shift per world?
 
 The adjusted candidate is the nearest darker/lighter shade of the SAME hue that clears
-3:1. Their brand, their call — write whichever they choose; if they keep a failing pick,
-append `(kept below 3:1 by choice)` to the value so the render check's warning is no
-surprise later.
+3:1 on the failing world (and still clears it on the passing one). Their brand, their
+call — write whichever they choose. If they keep a pick that fails on a world, append
+`(kept below 3:1 on <world> by choice)` to the value so the render check's warning is no
+surprise later. If they shift per world, record each world's shade beside its background.
 
 **Q5 — Accent scarcity (A/B).** "How strict is the one-color rule?"
 - **A — Strict.** Exactly one accent element per frame. The eye always has one place to
@@ -249,14 +264,31 @@ screen?" (This is the `mascot_policy` value.)
 - **C — A character / mascot.** A recurring figure that acts out the message.
 - Not sure → **A**.
 
+**If they pick C (character), ask for its asset — a character cannot be improvised.** A
+mascot's geometry comes from its character sheet, never from a guess, so the render needs
+the artwork present in the project. Ask one follow-up:
+
+> A character renders from its own sheet. If you have a character sheet or sprite in this
+> project, give me the path and I'll record it. If not, that's fine, I'll note the
+> character as pending and leave it out of frames until the art is in the project.
+
+- **Path given** → record it in the mascot section as the character asset (e.g.
+  `character: assets/mascot/sheet.png`).
+- **No path** → record the policy as `character (asset pending)`. The proof frame and
+  every later video stage OMIT the character and print one explicit line ("character
+  mascot declared but no sheet in the project; add one to include it"). Never improvise a
+  character to fill the gap.
+
 Then **instantiate all five archetypes** from the answers so far (world + type + accent +
 register + mascot). Read `ARCHETYPES` for the neutral skeletons; do not invent styles. For
 each of **Launch Film, Mechanism Explainer, Kinetic Essay, Announcement Card, Content
 Hero**, write one roster line in the brand's own terms — fill the world background, type,
 accent role, and register into the skeleton, name the ONE signature move, and tag it
 `[narrative]` or `[static]` (from the archetype's kind). The user inherits all five tuned;
-they do not design any. If mascot is B/C, note where the performing element appears
-(typically Launch Film's reveal and Announcement Card's charm).
+they do not design any. If mascot is B (ident/charm), note where the performing element
+appears (typically Launch Film's reveal and Announcement Card's charm). If mascot is C
+with an asset, note the same; if mascot is C with no asset yet, note the roster lines
+where the character WOULD appear but mark it pending, so nothing improvises one.
 
 → **Write Section 2 now.** `next_section: selection-rules`.
 
@@ -515,14 +547,19 @@ Point at the door, always naming the next command so the flow never dead-ends:
 
 ## Quick reference — the shape of a run
 
-1. Preflight (doctor + ffmpeg) → queue `preflight_result` → stop on failure with per-OS fix.
+1. Preflight → browser ensure (auto-fix missing browser) → skills update → required-checks
+   gate (auto-fix one-command items, stop only on user-decision installs) → queue
+   `preflight_result`.
 2. Detect state → empty (fresh) / partial (resume at `next_section`) / returning (edit vs
    regenerate, never silent overwrite).
-3. Ten questions, five sections, A/B where it's taste, "not sure" → `(defaulted)`, write
-   after each section with `status: incomplete`.
+3. Stamp interview start at the first question, then ten questions, five sections, A/B
+   where it's taste, "not sure" → `(defaulted)`, write after each section with
+   `status: incomplete`.
 4. Set `status: complete` → scaffold `style-ledger.md` + `delivery-matrix.md` from the
-   templates (never overwriting existing ones) → build + show the proof styleframe →
-   queue `brandinit_completed`.
+   templates (never overwriting existing ones) → copy `templates/proof-frame/` into
+   `PROOF_DIR`, substitute the brand tokens, `snapshot` (offline, no authoring skill) and
+   show the proof frame → queue `brandinit_completed` (minutes = last-answer minus
+   first-question).
 5. Consent question (last).
 6. Yes → write anon id, flush queue via curl `|| true`. No → delete queue, zero network.
 7. Close: "ask me for your first video."
