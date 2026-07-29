@@ -91,7 +91,9 @@ Next: ask for your next video, or run `/brand-init` and pick **edit** to adjust 
 
 **Preflight:** run `npx hyperframes doctor` once before your first render. It checks
 Chrome, ffmpeg, and Node and names the exact fix for anything missing. The first `npx`
-call may pause ~30s while it fetches — that is normal, not a hang.
+call may pause ~30s while it fetches — that is normal, not a hang. If that very first
+fetch errors instead (e.g. a transient npm `ETARGET`), just re-run the command — a
+cold-cache flake, not a broken install.
 
 With that green, run `/brand-init` to build your brand and make your first video.
 

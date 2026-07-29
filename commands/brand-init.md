@@ -164,6 +164,19 @@ the number, the CTA. What's yours? Give me a hex (like `#2E6E6A`) or just descri
   `(defaulted)` (e.g. paper → a deep teal; terminal → a neon `#3DF5C0`; studio → a
   confident blue `#2F6BFF`).
 
+**Contrast guard (run after the pick, before writing it).** Compute the WCAG contrast
+ratio of the accent against the chosen World background. At 3:1 or better, say nothing
+and move on. Below 3:1, one plain sentence — no lecture:
+
+> Heads up — `<hex>` on your `<world>` background is `<ratio>`:1, under the 3:1 line
+> where accent text stops reading. `<adjusted hex>` is the same hue, just
+> `<darker/lighter>`, and clears it. Keep yours or take the adjusted one?
+
+The adjusted candidate is the nearest darker/lighter shade of the SAME hue that clears
+3:1. Their brand, their call — write whichever they choose; if they keep a failing pick,
+append `(kept below 3:1 by choice)` to the value so the render check's warning is no
+surprise later.
+
 **Q5 — Accent scarcity (A/B).** "How strict is the one-color rule?"
 - **A — Strict.** Exactly one accent element per frame. The eye always has one place to
   land. (Calm, editorial brands.)
