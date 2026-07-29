@@ -145,15 +145,32 @@ thinking it hung. Renders longer than ~60s should surface progress.
    reference frame the chosen style anchors to (the archetype's teardown in
    `references/canon-deck.md`, when one exists), so the pick is judged against a
    known-good standard, not in a vacuum.
+   **Re-roll bound.** When the user rejects the presented frame(s), ask what's wrong in
+   their words and re-render ONE revised pair that incorporates it. Two re-rolls per
+   piece. After the second rejection, stop re-rendering and recommend editing
+   `motion-brand.md` directly, naming the section their objections point at (world,
+   type, accent, styles/roster — infer it from what they said). Track the count; it is
+   the `rerolls` value QC's telemetry reports. In solo-user mode the pick is a
+   self-review, but the bound still caps re-renders.
 5. **Build** — the composition, per the build contract below.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract stills at each beat to
-   confirm the frames match the boards. On a successful render, **append one row to the
+   confirm the frames match the boards. Pull the **poster** too — an ffmpeg still of the
+   boards' strongest beat (typically the resolve or hero moment), saved beside the MP4
+   in the piece's `renders/`. On a successful render, **append one row to the
    project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
    Style, Audio, Camera, Hero techniques, New capabilities tried, Destinations, Perf
    note) — the piece's slug, its style and kind of audio/camera actually shipped, and
    the destinations it went to. No ledger on disk? Note it once (same posture as a
    missing brand-file section) and continue.
+   **Close user-facing, never on bookkeeping.** Present the MP4 path, the poster, and a
+   one-line QC summary, then end on the three options: **ship it** (done), **change X**
+   (name the artifact the change routes to — `boards.md` for timing, `style.md` or
+   `motion-brand.md` for the look, `treatment.md` for the idea — edit it and rebuild
+   from that stage), or **re-roll** (a look-level objection consumes the stage-4 re-roll
+   bound; timing or content objections are a rebuild from the named artifact, not a
+   re-roll). Add one line inviting them to post their first video to the repo's **"Show
+   your first video"** GitHub Discussion — an invitation, not a demand.
 
 ### Structure check — scope it to the style's kind
 
