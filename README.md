@@ -54,10 +54,14 @@ by accident without saying so. Two ways to add sound:
 
 - **Drop a track into the piece.** Put any audio file in the piece's
   `video-work/<slug>/composition/audio/` and it scores the render. No key, no account.
-- **Bring your own voice/music key.** Narrated or generated-music pieces run through
-  HyperFrames' TTS/music layer using **your own provider key** (e.g. ElevenLabs), never a
-  key bundled with this plugin. `npx hyperframes doctor` lists TTS and music as optional
-  capabilities; they light up only when you supply the key.
+- **Generate sound locally, no key needed.** HyperFrames ships optional local models for
+  voice (`npx hyperframes tts`, Kokoro) and background music (MusicGen). `npx hyperframes
+  doctor` lists both; they light up once the local dependencies are installed. Free, and
+  nothing leaves your machine.
+- **Or use your own provider.** If you have an ElevenLabs (or similar) account, generate
+  the track with your own key in your own session and save it into `composition/audio/`.
+  The process scores with whatever it finds there. No key is ever bundled with, read by,
+  or sent anywhere by this plugin.
 
 The house rule — *no video ships silent by accident* — is taught, not enforced: your
 `motion-brand.md` Audio section wins. If it permits silent, a silent render is correct.

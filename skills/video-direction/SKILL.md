@@ -194,9 +194,10 @@ Decide which kind the chosen style is at stage 2 and state it, so the right chec
 Teach the audio floor: no shipped video should be silent by accident — a bed or VO
 carries mood and holds attention (ambient site loops excepted). **But the user's brand
 file wins.** If `motion-brand.md` permits silent, a silent render is correct: render it
-silent and add a one-line note ("silent per brand; add a bed at `composition/audio/` or
-a VO key to score it"). State it once, plainly. Never lecture a user whose own brand
-chose silence, and never block a render to go source a track they did not ask for.
+silent and add a one-line note ("silent per brand; drop a track at `composition/audio/`
+or generate one with `npx hyperframes tts` to score it"). State it once, plainly. Never
+lecture a user whose own brand chose silence, and never block a render to go source a
+track they did not ask for.
 
 ## Build contract
 
