@@ -1,0 +1,11 @@
+# Personal brand work and video production never ship in the public plugin.
+# A user's studio (their brand file, renders, ledger, delivery matrix) lives in
+# their own project, outside this repo. The Fern & Field example under examples/
+# is the one deliberate exception and is NOT ignored.
+/motion-brand.md
+/style-ledger.md
+/delivery-matrix.md
+/video-work/
+
+# Per-project runtime state the plugin writes when it runs in a user's project.
+.video-direction/
