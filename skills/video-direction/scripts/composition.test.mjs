@@ -1,0 +1,38 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { parseComposition } from "./composition.mjs";
+
+const HTML = `
+<div id="root" data-width="1920" data-height="1080">
+  <section id="beat-1" class="clip" data-start="0" data-duration="4" data-transition="push-left">
+    <div id="cam-beat-1" class="camera">
+      <h1 id="h1" data-rule="press-release-spring">Every top model.</h1>
+    </div>
+  </section>
+  <section id="beat-2" class="clip" data-start="3.5" data-duration="4.5">
+    <div id="cam-beat-2" class="camera">
+      <div id="picker" data-rule="cursor-ui-demo"></div>
+      <div id="ripple" data-rule="cursor-click-ripple"></div>
+    </div>
+  </section>
+  <section id="beat-3" class="clip" data-start="8" data-duration="3">
+    <div id="wordmark" data-rule="press-release-spring"></div>
+  </section>
+</div>`;
+
+test("parses clips, cameras, stamps and transitions in order", () => {
+  const { clips } = parseComposition(HTML);
+  assert.equal(clips.length, 3);
+  assert.deepEqual(clips[0], { id: "beat-1", n: 1, start: 0, end: 4, transition: "push-left", cameraId: "cam-beat-1", stamps: [{ id: "h1", rule: "press-release-spring" }] });
+  assert.equal(clips[1].transition, null);
+  assert.deepEqual(clips[1].stamps.map((s) => s.rule), ["cursor-ui-demo", "cursor-click-ripple"]);
+  assert.equal(clips[2].cameraId, null);
+  assert.equal(clips[2].n, 3);
+});
+
+test("a stamp without an id is reported, not silently dropped", () => {
+  const html = `<section id="beat-1" class="clip" data-start="0" data-duration="2"><div data-rule="press-release-spring"></div></section>`;
+  const { clips, problems } = parseComposition(html);
+  assert.equal(clips[0].stamps.length, 0);
+  assert.match(problems[0], /data-rule="press-release-spring" has no id/);
+});
