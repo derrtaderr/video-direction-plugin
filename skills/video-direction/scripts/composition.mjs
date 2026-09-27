@@ -12,9 +12,10 @@ export function parseComposition(html) {
   for (const m of html.matchAll(TAG)) {
     const attrs = m[2];
     const cls = attr(attrs, "class") ?? "";
+    const tokens = cls.split(/\s+/).filter(Boolean);
     const id = attr(attrs, "id");
     const rule = attr(attrs, "data-rule");
-    if (/\bclip\b/.test(cls) && attr(attrs, "data-start") !== null) {
+    if (tokens.includes("clip") && attr(attrs, "data-start") !== null) {
       const start = Number(attr(attrs, "data-start"));
       const dur = Number(attr(attrs, "data-duration") ?? 0);
       const n = id?.match(/^beat-(\d+)$/);
@@ -23,7 +24,8 @@ export function parseComposition(html) {
       continue;
     }
     if (!current) continue;
-    if (/\bcamera\b|\bworld\b/.test(cls) && id && !current.cameraId) current.cameraId = id;
+    // The build contract mandates id="cam-beat-<n>", so the id is the scope, not the nesting.
+    if ((tokens.includes("camera") || tokens.includes("world")) && id === `cam-${current.id}`) current.cameraId = id;
     if (rule) {
       if (!id) problems.push(`element with data-rule="${rule}" has no id inside ${current.id}; the map cannot find it`);
       else current.stamps.push({ id, rule });

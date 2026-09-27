@@ -36,3 +36,22 @@ test("a stamp without an id is reported, not silently dropped", () => {
   assert.equal(clips[0].stamps.length, 0);
   assert.match(problems[0], /data-rule="press-release-spring" has no id/);
 });
+
+test("hyphenated class names are not clips or cameras", () => {
+  const html = `<section id="beat-1" class="clip" data-start="0" data-duration="2"><div id="cam-beat-1" class="world-map"></div><div id="x" class="clip-path" data-start="9" data-duration="1"></div></section>`;
+  const { clips } = parseComposition(html);
+  assert.equal(clips.length, 1);
+  assert.equal(clips[0].cameraId, null);
+});
+
+test("camera is the element whose id is cam-<clip id>, not the first camera-class element", () => {
+  const html = `<section id="beat-1" class="clip" data-start="0" data-duration="2"><div id="other" class="camera"></div><div id="cam-beat-1" class="camera"></div></section>`;
+  assert.equal(parseComposition(html).clips[0].cameraId, "cam-beat-1");
+});
+
+test("a stray camera between clips is not attributed to the previous clip", () => {
+  const html = `<section id="beat-1" class="clip" data-start="0" data-duration="2"></section><div id="stray-camera" class="camera"></div><section id="beat-2" class="clip" data-start="2" data-duration="2"></section>`;
+  const { clips } = parseComposition(html);
+  assert.equal(clips[0].cameraId, null);
+  assert.equal(clips[1].cameraId, null);
+});
