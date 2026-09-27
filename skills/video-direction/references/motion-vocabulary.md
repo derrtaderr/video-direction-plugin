@@ -64,12 +64,11 @@ never everywhere.
 | Name | When it earns its place | Pointer |
 |---|---|---|
 | `cut` | The idea changes and nothing should soften it. Never every boundary | (none) |
-| `push-slide` | The next scene pushes this one out | transition |
-| `zoom-through` | The next scene arrives by scaling through this one | transition |
-| `blur-crossfade` | A soft blur into the next idea | transition |
-| `circle-iris` | A radial reveal of the next scene | transition |
-| `vertical-blinds` | The next scene covers this one from below | transition |
-| `directional-blur` | A fast pan with motion blur into the next scene | transition |
+| `crossfade` | Simple opacity swap between scenes | transition |
+| `blur-crossfade` | Default when two scenes' backgrounds differ significantly; blur masks any color clash | transition |
+| `push-slide` | The next scene pushes this one out; directional with horizontal or vertical motion | transition |
+| `zoom-through` | High-energy transition; old scene scales away with blur while new scales in | transition |
+| `squeeze` | Old scene compresses to a line on one edge; new expands from the opposite edge | transition |
 
 Two bindings are mandatory: a `[ui]` beat names `cursor-ui-demo` or another state-change rule,
 never `none`; a hero reveal names `zoom-out-workspace-reveal` or `camera-journey`.
