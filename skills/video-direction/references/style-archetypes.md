@@ -34,6 +34,9 @@ See the skill's **Structure check** section.
   the turn, a cut on the music's first downbeat.
 - **Variant axes:** pace (slow-burn vs punchy), voice (VO-led vs type-led), reveal style
   (build-on vs cut-to), closing-frame world (primary vs dark emphasis frame).
+- **Motion floor:** `camera=every-scene; transitions=1; rules=4; state-change=ui-beats; dead-zone=0.08`
+  A camera move in every scene, at least one named transition, at least four distinct rules,
+  a state change in every `[ui]` beat, dead zones under 8% of runtime.
 
 ## 2. Mechanism Explainer
 
@@ -52,6 +55,8 @@ See the skill's **Structure check** section.
   dwell so the eye can read it (~2.5s per line).
 - **Variant axes:** panel layout (stacked vs traveling), VO vs captions, step count (3 vs
   4), accent role (path-tracer vs state-marker).
+- **Motion floor:** `camera=every-scene; transitions=1; rules=4; state-change=ui-beats; dead-zone=0.08`
+  Panel scenes with content-level motion count as a camera move (a `[ui]` state change on the panel).
 
 ## 3. Kinetic Essay
 
@@ -69,6 +74,7 @@ See the skill's **Structure check** section.
   carrying the turn, cut density matched to the track's grid.
 - **Variant axes:** type treatment (serif-editorial vs mono-technical), cut density (sparse
   vs rapid), voice (VO vs type-led), accent cadence (one word vs one line).
+- **Motion floor:** `camera=every-scene; transitions=1; rules=3; state-change=none; dead-zone=0.05`
 
 ## 4. Announcement Card
 
@@ -87,6 +93,8 @@ See the skill's **Structure check** section.
   first.
 - **Variant axes:** layout (centered vs left-aligned), charm element (which one moves),
   accent target (headline vs CTA), aspect (square vs vertical).
+- **Motion floor:** `camera=one-drift; transitions=0; rules=2; state-change=none; dead-zone=none`
+  One drift, the charm plus one entrance rule. The held frame is the point, so no dead-zone cap.
 
 ## 5. Content Hero
 
@@ -104,6 +112,7 @@ See the skill's **Structure check** section.
   word or number, a subtle brand frame that never competes with the words.
 - **Variant axes:** hero element (quote vs stat vs headline), background (primary world vs
   a tinted variant), accent target, aspect (square vs vertical for stories/reels).
+- **Motion floor:** `camera=one-drift; transitions=0; rules=2; state-change=none; dead-zone=none`
 
 ---
 
