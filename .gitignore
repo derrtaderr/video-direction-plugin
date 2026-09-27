@@ -9,3 +9,4 @@
 
 # Per-project runtime state the plugin writes when it runs in a user's project.
 .video-direction/
+.worktrees/
