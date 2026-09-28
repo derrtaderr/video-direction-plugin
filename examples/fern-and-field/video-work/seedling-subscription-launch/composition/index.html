@@ -24,6 +24,12 @@
         background-image: radial-gradient(#e7e0d2 1.1px, transparent 1.2px);
         background-size: 34px 34px;
       }
+      .camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
       .card {
         position: absolute;
         inset: 0;
@@ -100,40 +106,50 @@
       data-height="1080"
       data-duration="11"
     >
-      <section id="card" class="clip" data-start="0" data-duration="11" data-track-index="1">
+      <section id="beat-1" class="clip" data-start="0" data-duration="11" data-track-index="1">
         <div class="paper"></div>
-        <div class="card">
-          <p id="wordmark" class="wordmark">Fern <span id="amp">&amp;</span> Field</p>
-          <h1 id="headline" class="headline">The Seedling Subscription</h1>
+        <div id="cam-beat-1" class="camera">
+          <div class="card">
+            <p id="wordmark" class="wordmark">Fern <span id="amp">&amp;</span> Field</p>
+            <h1 id="headline" class="headline" data-rule="press-release-spring">The Seedling Subscription</h1>
 
-          <!-- charm: a seedling sprouting. Sage naturals, NOT the accent green. -->
-          <svg id="seedling" class="seedling" viewBox="0 0 150 172" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- soil line -->
-            <rect id="soil" x="30" y="162" width="90" height="6" rx="3" fill="#cbb79a" />
-            <!-- stem grows up from the soil -->
-            <rect id="stem" x="72" y="66" width="6" height="98" rx="3" fill="#7a6a55" />
-            <!-- left leaf -->
-            <path
-              id="leaf-left"
-              d="M75 92 C 48 84, 30 96, 26 116 C 52 122, 71 112, 75 92 Z"
-              fill="#8fa97e"
-            />
-            <!-- right leaf -->
-            <path
-              id="leaf-right"
-              d="M75 80 C 102 72, 120 84, 124 104 C 98 110, 79 100, 75 80 Z"
-              fill="#8fa97e"
-            />
-          </svg>
+            <!-- charm: a seedling sprouting. Sage naturals, NOT the accent green. -->
+            <svg id="seedling" class="seedling" viewBox="0 0 150 172" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- soil line -->
+              <rect id="soil" x="30" y="162" width="90" height="6" rx="3" fill="#cbb79a" />
+              <!-- stem grows up from the soil -->
+              <rect id="stem" x="72" y="66" width="6" height="98" rx="3" fill="#7a6a55" />
+              <!-- left leaf -->
+              <path
+                id="leaf-left"
+                d="M75 92 C 48 84, 30 96, 26 116 C 52 122, 71 112, 75 92 Z"
+                fill="#8fa97e"
+              />
+              <!-- right leaf -->
+              <path
+                id="leaf-right"
+                d="M75 80 C 102 72, 120 84, 124 104 C 98 110, 79 100, 75 80 Z"
+                fill="#8fa97e"
+              />
+              <!-- the leaf unfurl's spark: a small honest particle burst (6 discrete dots,
+                   each its own pure-function-of-time tween), never the fern accent green. -->
+              <circle id="spark-1" data-rule="particle-burst" cx="75" cy="82" r="3" fill="#8fa97e" opacity="0" />
+              <circle id="spark-2" data-rule="particle-burst" cx="75" cy="82" r="2.5" fill="#d9c27a" opacity="0" />
+              <circle id="spark-3" data-rule="particle-burst" cx="75" cy="82" r="3" fill="#8fa97e" opacity="0" />
+              <circle id="spark-4" data-rule="particle-burst" cx="75" cy="82" r="2.5" fill="#d9c27a" opacity="0" />
+              <circle id="spark-5" data-rule="particle-burst" cx="75" cy="82" r="2.5" fill="#8fa97e" opacity="0" />
+              <circle id="spark-6" data-rule="particle-burst" cx="75" cy="82" r="3" fill="#d9c27a" opacity="0" />
+            </svg>
 
-          <ul id="details" class="details">
-            <li id="d1">Native plant plugs, delivered to your door</li>
-            <li id="d2">A new region-native species every month</li>
-            <li id="d3">Starts March 1</li>
-          </ul>
+            <ul id="details" class="details">
+              <li id="d1">Native plant plugs, delivered to your door</li>
+              <li id="d2">A new region-native species every month</li>
+              <li id="d3">Starts March 1</li>
+            </ul>
 
-          <p id="price" class="price">$24<small>/mo</small></p>
-          <p id="url" class="url">fernandfield.com</p>
+            <p id="price" class="price" data-rule="press-release-spring">$24<small>/mo</small></p>
+            <p id="url" class="url">fernandfield.com</p>
+          </div>
         </div>
       </section>
     </div>
@@ -152,14 +168,18 @@
       gsap.set("#stem", { transformOrigin: "50% 100%", scaleY: 0 });
       gsap.set(["#leaf-left", "#leaf-right"], { transformOrigin: "50% 100%", scale: 0, opacity: 0 });
       gsap.set("#soil", { transformOrigin: "50% 100%", scaleX: 0 });
+      // sparks start dormant at the crown where the leaves meet the stem
+      gsap.set(
+        ["#spark-1", "#spark-2", "#spark-3", "#spark-4", "#spark-5", "#spark-6"],
+        { attr: { cx: 75, cy: 82 }, opacity: 0, transformOrigin: "75px 82px" },
+      );
 
-      // 1. wordmark settles (0.0)
-      tl.to("#wordmark", { opacity: 1, duration: 0.7, ease: "power2.out" }, 0.0)
-        .from("#wordmark", { y: 20, duration: 0.7, ease: "power2.out" }, 0.0);
+      // 1. wordmark settles (0.0), opacity + y merged into one tween (same window,
+      // same element, avoids a self-collision flag from two overlapping tween objects)
+      tl.fromTo("#wordmark", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.0);
 
       // 2. headline (1.2)
-      tl.to("#headline", { opacity: 1, duration: 0.7, ease: "power2.out" }, 1.2)
-        .from("#headline", { y: 30, duration: 0.7, ease: "power2.out" }, 1.2);
+      tl.fromTo("#headline", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 1.2);
 
       // 3. seedling sprouts — the one charm (2.6)
       tl.to("#soil", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 2.6);
@@ -167,17 +187,26 @@
       tl.to("#leaf-left", { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.6)" }, 3.5);
       tl.to("#leaf-right", { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.6)" }, 3.75);
 
-      // 4. detail list, staggered (4.6)
-      tl.to("#d1", { opacity: 1, duration: 0.55, ease: "power2.out" }, 4.6)
-        .from("#d1", { y: 16, duration: 0.55, ease: "power2.out" }, 4.6);
-      tl.to("#d2", { opacity: 1, duration: 0.55, ease: "power2.out" }, 4.9)
-        .from("#d2", { y: 16, duration: 0.55, ease: "power2.out" }, 4.9);
-      tl.to("#d3", { opacity: 1, duration: 0.55, ease: "power2.out" }, 5.2)
-        .from("#d3", { y: 16, duration: 0.55, ease: "power2.out" }, 5.2);
+      // 3b. the leaf unfurl's spark, an honest particle-burst: six discrete dots, each a
+      // pure function of timeline position (no onUpdate, no randomness at render time),
+      // radiating from the crown once both leaves have landed, then gone. Each dot starts
+      // on its own point of a small ring around the crown (never a shared coincident
+      // point) so no two dots' bounding boxes overlap in flight.
+      tl.fromTo("#spark-1", { attr: { cx: 84, cy: 82 }, opacity: 1 }, { attr: { cx: 103, cy: 82 }, opacity: 0, duration: 0.55, ease: "power2.out" }, 4.4);
+      tl.fromTo("#spark-2", { attr: { cx: 79.5, cy: 74.2 }, opacity: 1 }, { attr: { cx: 89, cy: 57.8 }, opacity: 0, duration: 0.5, ease: "power2.out" }, 4.42);
+      tl.fromTo("#spark-3", { attr: { cx: 70.5, cy: 74.2 }, opacity: 1 }, { attr: { cx: 61, cy: 57.8 }, opacity: 0, duration: 0.52, ease: "power2.out" }, 4.4);
+      tl.fromTo("#spark-4", { attr: { cx: 66, cy: 82 }, opacity: 1 }, { attr: { cx: 47, cy: 82 }, opacity: 0, duration: 0.48, ease: "power2.out" }, 4.45);
+      tl.fromTo("#spark-5", { attr: { cx: 70.5, cy: 89.8 }, opacity: 1 }, { attr: { cx: 61, cy: 106.2 }, opacity: 0, duration: 0.5, ease: "power2.out" }, 4.43);
+      tl.fromTo("#spark-6", { attr: { cx: 79.5, cy: 89.8 }, opacity: 1 }, { attr: { cx: 89, cy: 106.2 }, opacity: 0, duration: 0.56, ease: "power2.out" }, 4.4);
 
-      // 5. price lands last — THE green accent (6.6)
-      tl.to("#price", { opacity: 1, duration: 0.6, ease: "power2.out" }, 6.6)
-        .from("#price", { scale: 0.72, duration: 0.8, ease: "back.out(1.5)" }, 6.6);
+      // 4. detail list, staggered (4.6)
+      tl.fromTo("#d1", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 4.6);
+      tl.fromTo("#d2", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 4.9);
+      tl.fromTo("#d3", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 5.2);
+
+      // 5. price lands last, THE green accent (6.6). Opacity and scale merged into one
+      // tween (same window, same element, avoids a self-collision flag).
+      tl.fromTo("#price", { opacity: 0, scale: 0.72 }, { opacity: 1, scale: 1, duration: 0.75, ease: "back.out(1.5)" }, 6.6);
 
       // 6. resolve (9.0): hard-hand the green from price to the wordmark "&".
       //    price snaps neutral + dims FIRST so only one green is ever meaning-bearing.
@@ -185,6 +214,10 @@
       tl.to("#price", { opacity: 0.5, duration: 0.5, ease: "power1.inOut" }, 9.0);
       tl.to("#amp", { color: GREEN, duration: 0.6, ease: "power2.out" }, 9.15);
       tl.to("#url", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 9.3);
+
+      // camera: one slow push toward the seedling as it sprouts, released on the price
+      tl.fromTo("#cam-beat-1", { scale: 1 }, { scale: 1.05, duration: 6, ease: "sine.inOut" }, 2.4)
+        .to("#cam-beat-1", { scale: 1.0, duration: 2.5, ease: "sine.inOut" }, 8.5);
 
       window.__timelines["main"] = tl;
     </script>
