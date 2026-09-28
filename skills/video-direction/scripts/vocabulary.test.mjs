@@ -42,5 +42,6 @@ test("SKILL.md wires stage 3b, the stamps, and the motion critic", () => {
   assert.match(skill, /scripts\/motion-floor\.mjs --piece/);
   assert.match(skill, /\*\*Motion critic\*\*/);
   assert.match(skill, /three stills per beat/);
+  assert.match(skill, /scripts\/stills-check\.mjs/);
   assert.ok(skill.indexOf("motion-floor.mjs") < skill.indexOf("npx hyperframes render`** for the MP4"), "critic must be described before the render");
 });
