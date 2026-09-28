@@ -27,8 +27,12 @@ export function evaluateFloor({ map, composition, beats, floor }) {
     if (moving) moves++;
     else camProblems.push(`beat ${b.n} camera ${clip.cameraId ? "#" + clip.cameraId : "(none)"} has no transform tween in its window`);
   }
+  const missing = camProblems.filter((p) => p.includes("has no clip"));
   if (floor.camera === "every-scene") add("camera", camProblems.length === 0, camProblems.length ? camProblems.join("; ") : `${moves} scenes move, holds declared: ${beats.filter((b) => b.camera === "hold").length}`);
-  else add("camera", moves >= 1 || composition.clips.some((c) => c.cameraId && tweensFor(`#${c.cameraId}`).some((t) => t.props.some((p) => MOVE_PROPS.has(p)))), moves >= 1 ? "one drift present" : "no camera drift anywhere");
+  else {
+    const drifted = moves >= 1 || composition.clips.some((c) => c.cameraId && tweensFor(`#${c.cameraId}`).some((t) => t.props.some((p) => MOVE_PROPS.has(p))));
+    add("camera", missing.length === 0 && drifted, missing.length ? missing.join("; ") : (drifted ? "one drift present" : "no camera drift anywhere"));
+  }
 
   // stamps carry motion, and declared names are stamped
   const stampProblems = [];

@@ -88,3 +88,16 @@ test("Announcement Card floor: one drift anywhere, no transitions required", () 
   const map = { duration: 11, totalTweens: 3, mappedTweens: 3, deadZones: [{ start: 8, end: 11, duration: 3 }], tweens: [tween("#cam-beat-1", ["scale"], 0, 11), tween("#charm", ["scale"], 2, 4), tween("#price", ["opacity", "y"], 6, 7)] };
   assert.equal(evaluateFloor({ map, composition: comp, beats: b, floor: card }).pass, true);
 });
+
+test("a beat with no clip fails the camera check under a one-drift floor too", () => {
+  const card = { camera: "one-drift", transitions: 0, rules: 2, stateChange: "none", deadZone: null };
+  const b = [
+    { n: 1, start: 0, role: "card", content: "a", ui: false, camera: "hold", entrance: "press-release-spring", state: "none", transition: "cut" },
+    { n: 2, start: 5, role: "card", content: "b", ui: false, camera: "multi-phase-camera", entrance: "kinetic-beat-slam", state: "none", transition: "cut" },
+  ];
+  const comp = { clips: [{ id: "beat-1", n: 1, start: 0, end: 10, transition: null, cameraId: "cam-beat-1", stamps: [{ id: "charm", rule: "particle-burst" }, { id: "price", rule: "press-release-spring" }] }] };
+  const map = { duration: 10, totalTweens: 3, mappedTweens: 3, deadZones: [], tweens: [tween("#cam-beat-1", ["scale"], 0, 10), tween("#charm", ["scale"], 2, 4), tween("#price", ["opacity", "y"], 6, 7)] };
+  const r = evaluateFloor({ map, composition: comp, beats: b, floor: card });
+  assert.equal(r.pass, false);
+  assert.match(r.checks.find((c) => c.name === "camera").evidence, /beat 2 has no clip id="beat-2"/);
+});
