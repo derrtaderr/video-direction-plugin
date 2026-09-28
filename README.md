@@ -9,6 +9,12 @@ styleframes, build, QC) with a gate at each stage, so the look, timing, and soun
 decisions on the record instead of the model's statistical average. It directs;
 [HyperFrames](#prerequisites) renders.
 
+**Motion is demanded, not hoped for.** Every beat names its camera move, entrance, state
+change and transition from a motion vocabulary; a motion critic measures the composition
+before it renders and fails it under the archetype's floor; and each new video has to reach
+for moves the brand has not used in its last two. The result is videos that read as
+designed rather than assembled.
+
 ## Proof
 
 <!-- PROOF VIDEO GOES HERE: three brands, one system, side by side. -->
@@ -93,12 +99,6 @@ Next: ask for your next video, or run `/brand-init` and pick **edit** to adjust 
 - **ffmpeg** (renders composite audio and video).
 - **HyperFrames** — the rendering framework. Nothing to install ahead of time; it is
   fetched on demand via `npx hyperframes …`.
-
-**Motion is demanded, not hoped for.** Every beat names its camera move, entrance, state
-change and transition from a motion vocabulary; a motion critic measures the composition
-before it renders and fails it under the archetype's floor; and each new video has to reach
-for moves the brand has not used in its last two. The result is videos that read as
-designed rather than assembled.
 
 **Preflight:** run `npx hyperframes doctor` once before your first render. It checks
 Chrome, ffmpeg, and Node and names the exact fix for anything missing. The first `npx`
