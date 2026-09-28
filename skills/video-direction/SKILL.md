@@ -181,10 +181,15 @@ thinking it hung. Renders longer than ~60s should surface progress.
    picks it up. Else fall back to keyless-local (`npx hyperframes tts` / MusicGen) or
    silent per the brand file. Any generation failure falls back and never blocks the
    render. Record the mode that actually shipped (vo / music / silent) for QC.
+   **Before any render, two gates in this order.** First `npx hyperframes check`. Then the
+   motion critic: `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece
+   video-work/<slug> --brand motion-brand.md`. A FAIL, including `not measured`, means the
+   piece does not render; fix the composition or the choreography columns and re-run. The
+   handoff table's stage 5 row carries the full instruction.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract **three stills per beat**
    (its in, its hold, its out) onto the contact sheet, so the review sees the motion and
-   not the pose to confirm the frames match the boards. Pull the **poster** too — an ffmpeg still of the
+   not the pose, and to confirm the frames match the boards. Pull the **poster** too — an ffmpeg still of the
    boards' strongest beat (typically the resolve or hero moment), saved beside the MP4
    in the piece's `renders/`. On a successful render, **append one row to the
    project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
