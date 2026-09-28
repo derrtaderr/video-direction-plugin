@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // skills/video-direction/scripts/motion-floor.mjs
 // The motion critic. Runs after `npx hyperframes check` and before `npx hyperframes render`.
-// Usage: node motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>]
+// Usage: node motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>] [--ledger style-ledger.md]
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { homedir } from "node:os";
@@ -12,12 +12,13 @@ import { parseArchetypeFloors, parseBrandMotion, resolveFloor } from "./floors.m
 import { parseBoards, lintChoreography } from "./boards.mjs";
 import { parseComposition } from "./composition.mjs";
 import { evaluateFloor } from "./evaluate.mjs";
+import { checkCoverage } from "./coverage.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
 const piece = opt("--piece");
-if (!piece) { console.error("usage: motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>]"); process.exit(2); }
+if (!piece) { console.error("usage: motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>] [--ledger style-ledger.md]"); process.exit(2); }
 
 const compDir = join(piece, "composition");
 const outDir = join(compDir, ".hyperframes", "anim-map");
@@ -106,6 +107,13 @@ async function main() {
   const composition = parseComposition(readFileSync(indexPath, "utf8"));
   const result = evaluateFloor({ map, composition, beats, floor });
   if (composition.problems?.length) result.checks.push({ name: "stamps without id", pass: false, evidence: composition.problems.join("; ") });
+
+  const ledgerPath = opt("--ledger");
+  if (ledgerPath && existsSync(ledgerPath)) {
+    const cov = checkCoverage(readFileSync(ledgerPath, "utf8"), beats);
+    result.checks.push({ name: "coverage", pass: cov.pass, evidence: cov.evidence });
+  }
+
   result.pass = result.checks.every((c) => c.pass);
   return finish(archetype, result, { floor, notes });
 }
