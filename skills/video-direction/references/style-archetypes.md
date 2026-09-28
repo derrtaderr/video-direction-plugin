@@ -21,7 +21,7 @@ See the skill's **Structure check** section.
 ## 1. Launch Film
 
 - **For:** announcing a new product, feature, company, or milestone — the flagship piece.
-- **Canon:** the Claude Code in-app browser launch teardown in `references/canon-deck.md`.
+- **Canon:** two anchors in `references/canon-deck.md`: the Claude Code in-app browser launch (restrained) and the TypingMind promo (high-motion). Name which one the piece anchors to.
 - **Kind:** narrative (story-spine).
 - **Length:** 20–40s.
 - **Skeleton:** cold-open hook (a state or a question, no logo yet) → the problem it

@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { parseComposition } from "./composition.mjs";
 
 const HTML = `
@@ -54,4 +55,17 @@ test("a stray camera between clips is not attributed to the previous clip", () =
   const { clips } = parseComposition(html);
   assert.equal(clips[0].cameraId, null);
   assert.equal(clips[1].cameraId, null);
+});
+
+test("the feature-beat template is a stamped [ui] beat with a camera", () => {
+  const html = readFileSync(new URL("../../../templates/feature-beat/index.html", import.meta.url), "utf8");
+  const { clips, problems } = parseComposition(html);
+  assert.equal(problems.length, 0);
+  assert.equal(clips.length, 1);
+  assert.equal(clips[0].id, "beat-1");
+  assert.equal(clips[0].cameraId, "cam-beat-1");
+  const rules = clips[0].stamps.map((s) => s.rule);
+  assert.ok(rules.includes("press-release-spring"));
+  assert.ok(rules.includes("cursor-ui-demo"));
+  assert.ok(rules.includes("cursor-click-ripple"));
 });
