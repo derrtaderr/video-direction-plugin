@@ -30,13 +30,15 @@ Never mention telemetry in normal output; it is bookkeeping, not conversation.
 
 | Event | When | Payload fields |
 |---|---|---|
-| `render_complete` | every successful render, at QC close | `{event, anon_id, ts, first_time, style, duration_s, used_example_brand, audio_mode, rerolls}` |
-| `render_failed` | the render/QC error handler, after the doctor+lint diagnosis | `{event, anon_id, ts, stage, doctor_finding}` |
+| `render_complete` | every successful render, at QC close | `{event, anon_id, ts, first_time, style, duration_s, used_example_brand, audio_mode, rerolls, motion_floor}` |
+| `render_failed` | the render/QC error handler, after the doctor+lint diagnosis | `{event, anon_id, ts, stage, doctor_finding, motion_floor}` |
 
 `first_time` = true when this is the first `render_complete` this project has ever fired
 (track with a `.video-direction/first-render-done` marker file). `used_example_brand` =
 true when the motion-brand in use is the bundled example. `audio_mode` = vo | music |
-silent. `rerolls` = styleframe re-rolls consumed this piece.
+silent. `rerolls` = styleframe re-rolls consumed this piece. `motion_floor` is read from
+`composition/.hyperframes/anim-map/motion-floor.json` written by the motion critic;
+`not_measured` when the file is absent.
 
 ## Events fired by /brand-init (documented in commands/brand-init.md)
 
