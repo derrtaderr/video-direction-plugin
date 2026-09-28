@@ -36,8 +36,9 @@ there is nothing to install ahead of time beyond Node 22+ and ffmpeg.
 | 1. Treatment | Becomes the brief. HyperFrames' intent interview / `BRIEF.md` is already answered by your treatment — hand it over instead of re-interviewing from scratch. |
 | 2. Style direction | Picks the workflow route. Short motion-first card → the motion-graphics route; longer narrative/product film → the product-launch route. When unsure, take the LIGHTER route and build directly against the composition contract rather than running heavy narrative ceremony. |
 | 3. Boardomatic | The beat table drives the composition's timeline (clip timing, cuts on beat/VO boundaries). |
+| 3b. Choreography | Each beat's Camera / Entrance / State change / Transition out names a recipe: `hyperframes-animation` rules (`rules/<name>.md`), blueprints (`blueprints/<id>.md`) or a transition. The build instantiates exactly those. |
 | 4. Styleframes | Scaffold first (`npx hyperframes init` inside the piece's `composition/` folder — note `init` may nest a subfolder named after the project; check where it put the files and flatten them into `composition/` if it did), build the still frame, render it with `npx hyperframes snapshot` (skip `check` on deliberate stills — it flags motionless frames), then Read the image and art-direct it. |
-| 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. |
+| 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. **Then run the motion critic, before any render:** `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece video-work/<slug> --brand motion-brand.md` (the `<plugin>` root is the folder this SKILL.md lives two levels under). It runs the animation skill's animation-map on the composition and reconciles it against the beat table and the archetype's motion floor. `MOTION FLOOR <archetype>: FAIL` names the check, the beat and the vocabulary entry that would satisfy it; fix the composition or the choreography columns and re-run. `not measured` is a fail, never a warning: a piece whose motion cannot be measured does not render. Announce the run; the map takes ~30-60s. |
 | 6. QC | **Render with `npx hyperframes render`** for the MP4, then extract stills at each beat and verify against the delivery spec. |
 
 If a HyperFrames command fails, re-run `npx hyperframes doctor` and `npx hyperframes
@@ -147,6 +148,16 @@ thinking it hung. Renders longer than ~60s should surface progress.
    content. Run the **structure check** for the style's kind (below) before timing.
    Music-driven pieces choose the actual track NOW (cuts land on beats); VO pieces lock
    the script now.
+3b. **Choreography** (stage 3b, the Motion Designer) — fill the four motion columns of the
+   beat table (Camera, Entrance, State change, Transition out) with names from
+   `references/motion-vocabulary.md`. Begin any beat that shows an interface with `[ui]` in
+   its Content cell. Every signature move from stage 2 must appear in the columns. Read
+   `style-ledger.md`'s **Rules used** column and choose at least two names the brand has not
+   used in its last two videos, so the library gets used over time. Write one line under the
+   table naming the piece's **motion signature**. Two bindings are mandatory: a `[ui]` beat
+   names `cursor-ui-demo` or another state-change rule; a hero reveal names
+   `zoom-out-workspace-reveal` or `camera-journey`. `hold`, `none` and `cut` are names; never
+   `hold` in every camera cell, never `cut` at every boundary.
 4. **Styleframes** — NOTE for static single-frame styles (announcement cards, held-frame pieces): stages 4 and 5 naturally collapse — you must build the composition to produce the styleframe, so build the frame first, snapshot it, review it as the styleframe, then finish the motion pass. Say so when it happens; do not pretend two stages ran. For flagship pieces (launch films, anything flagged important):
    render TWO fully-designed still frames of the same hero moment in two directions and
    present them for an A/B pick before building. For routine pieces, render ONE
@@ -171,19 +182,22 @@ thinking it hung. Renders longer than ~60s should surface progress.
    silent per the brand file. Any generation failure falls back and never blocks the
    render. Record the mode that actually shipped (vo / music / silent) for QC.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
-   captions where words carry, hook inside 2s), and extract stills at each beat to
-   confirm the frames match the boards. Pull the **poster** too — an ffmpeg still of the
+   captions where words carry, hook inside 2s), and extract **three stills per beat**
+   (its in, its hold, its out) onto the contact sheet, so the review sees the motion and
+   not the pose to confirm the frames match the boards. Pull the **poster** too — an ffmpeg still of the
    boards' strongest beat (typically the resolve or hero moment), saved beside the MP4
    in the piece's `renders/`. On a successful render, **append one row to the
    project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
    Style, Audio, Camera, Hero techniques, New capabilities tried, Destinations, Perf
    note) — the piece's slug, its style and kind of audio/camera actually shipped, and
-   the destinations it went to. No ledger on disk? Note it once (same posture as a
+   the destinations it went to, including the new **Rules used** column (the stamped
+   `data-rule` names, comma-separated). No ledger on disk? Note it once (same posture as a
    missing brand-file section) and continue.
    **Close user-facing, never on bookkeeping.** Present the MP4 path, the poster, and a
    one-line QC summary, then end on the three options: **ship it** (done), **change X**
    (name the artifact the change routes to — `boards.md` for timing, `style.md` or
-   `motion-brand.md` for the look, `treatment.md` for the idea — edit it and rebuild
+   `motion-brand.md` for the look, `treatment.md` for the idea, or `boards.md`'s
+   choreography columns for motion (then re-run the motion critic) — edit it and rebuild
    from that stage), or **re-roll** (a look-level objection consumes the stage-4 re-roll
    bound; timing or content objections are a rebuild from the named artifact, not a
    re-roll). Add one line inviting them to post their first video to the repo's **"Show
@@ -245,6 +259,15 @@ for studio audio").
   cy ± (halfHeight/scale) (plus any drift amplitude), and every edge must stay inside
   the surface being framed, or the void behind it shows. Verify with a still at the
   beat's dwell before rendering.
+- **Scene clips carry the beat number and the stamps carry the rule.** Each beat's scene
+  clip is `<section id="beat-<n>" class="clip" data-start data-duration>`; a declared
+  transition out goes on it as `data-transition="<name>"` and the next clip's `data-start`
+  begins before this one ends (the overlap window). Each scene's camera wrapper is
+  `<div id="cam-beat-<n>" class="camera">`. Every element that instantiates a vocabulary
+  rule carries both an `id` and `data-rule="<name>"`; the motion critic finds elements by
+  id, so a stamp without an id is a fail.
+- Camera moves are transform tweens on `#cam-beat-<n>` (scale, x, y, rotation); an opacity
+  tween on the camera is not a move.
 - Multi-panel scenes with content-level motion (typing, line-draws, traveling chips)
   may hold a static camera — the camera rule targets single-window screen-recording
   sameness, not composed diagram scenes.
@@ -272,12 +295,20 @@ for studio audio").
   accent, more than the brand's allowed accent per frame, containers nested more than
   ~2 deep, off-register energy. Compare the frame side-by-side with the style's canon
   reference if one is named (canon references live in `references/canon-deck.md` — the
-  teardown for the archetype the piece anchors to), and against the brand constants.
+  teardown for the archetype the piece anchors to), and against the brand constants, and
+  name which anchor was used when the archetype has both a restrained and a **high-motion**
+  anchor in `references/canon-deck.md`.
 - **Timing critic** (after boards): every beat earns its seconds; cuts land on beat/VO
   boundaries; total fits the runtime budget; the hook lands inside 2 seconds; and — for
   narrative styles — the story spine holds (read the beats as a chain, flag "and then"
   joins and evidence beats whose setup was cut). For static/stacked styles, check the
   hierarchy instead: reading order and the punchline landing last.
+- **Motion critic** (end of build, before render): `scripts/motion-floor.mjs`. A count, not
+  an opinion: camera move per scene, declared rules that animate, distinct rules against the
+  archetype floor, named transitions with overlap windows, a state change in every `[ui]`
+  beat, dead zones under the cap, and the animation map's own flags (offscreen, invisible,
+  degenerate, collision). The floor per archetype is in `references/style-archetypes.md`; a
+  brand may raise it in `motion-brand.md`'s Motion section and never lower it.
 
 ## Craft rules (earned in production; do not relearn them)
 

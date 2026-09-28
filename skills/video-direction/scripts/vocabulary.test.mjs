@@ -32,3 +32,15 @@ test("names are unique across tables", () => {
   const total = v.camera.size + v.entrance.size + v.state.size + v.transition.size;
   assert.equal(total, v.all.size);
 });
+
+test("SKILL.md wires stage 3b, the stamps, and the motion critic", () => {
+  const skill = readFileSync(new URL("../SKILL.md", import.meta.url), "utf8");
+  assert.match(skill, /\*\*Choreography\*\* \(stage 3b/);
+  assert.match(skill, /data-rule=/);
+  assert.match(skill, /id="beat-<n>"/);
+  assert.match(skill, /id="cam-beat-<n>"/);
+  assert.match(skill, /scripts\/motion-floor\.mjs --piece/);
+  assert.match(skill, /\*\*Motion critic\*\*/);
+  assert.match(skill, /three stills per beat/);
+  assert.ok(skill.indexOf("motion-floor.mjs") < skill.indexOf("npx hyperframes render`** for the MP4"), "critic must be described before the render");
+});
