@@ -15,11 +15,9 @@
   .headline .two { color: var(--accent); display: block; }
   .sub { margin-top: 28px; font-size: 28px; color: var(--muted); }
   .card { position: absolute; left: 900px; top: 220px; width: 860px; padding: 32px; border-radius: 20px; background: var(--card); box-shadow: 0 30px 80px rgba(0,0,0,.45); will-change: transform; }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-radius: 12px; color: var(--fg); font-size: 26px; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-radius: 12px; color: var(--fg); font-size: 26px; outline: 2px solid rgba(91,140,255, var(--sel, 0)); background: rgba(91,140,255, calc(var(--sel, 0) * .10)); }
   .row + .row { margin-top: 12px; }
-  .row.selected { outline: 2px solid var(--accent); background: rgba(91,140,255,.10); }
-  .check { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--muted); }
-  .row.selected .check { background: var(--accent); border-color: var(--accent); }
+  .check { width: 28px; height: 28px; border-radius: 50%; box-shadow: 0 0 0 2px var(--muted); background: rgba(91,140,255, var(--sel, 0)); border: 2px solid rgba(91,140,255, var(--sel, 0)); }
   .cursor { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(0,0,0,.4); will-change: transform; }
   .ripple { position: absolute; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; transform: scale(1); will-change: transform, opacity; }
 </style>
@@ -54,7 +52,8 @@
   // cursor-ui-demo: the cursor travels to row 2 and clicks; the row changes state
   tl.to("#cursor", { x: -180, y: -420, duration: 0.8, ease: "power2.inOut" }, 1.0);
   tl.to("#cursor", { scale: 0.85, duration: 0.08 }, 1.85).to("#cursor", { scale: 1, duration: 0.12 }, 1.95);
-  tl.call(() => document.getElementById("row-2").classList.add("selected"), null, 1.9);
+  // the selected look is a pure function of timeline position, safe under any seek order
+  tl.fromTo("#row-2", { "--sel": 0 }, { "--sel": 1, duration: 0.05, ease: "none" }, 1.9);
   // cursor-click-ripple
   tl.fromTo("#ripple", { x: -180, y: -420, scale: 1, opacity: 0.9 }, { scale: 3.2, opacity: 0, duration: 0.5, ease: "power2.out" }, 1.88);
   // camera drift: the whole scene eases in toward the card
