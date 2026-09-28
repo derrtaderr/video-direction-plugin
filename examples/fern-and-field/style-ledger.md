@@ -4,9 +4,9 @@ One row per shipped video. The skill reads this at stage 2 (vary the variant axe
 recent rows, never repeat the last combination) and appends a row at QC after each
 successful render.
 
-| Date | Video | Tier | Style | Audio | Camera | Hero techniques | New capabilities tried | Destinations | Perf note |
-|---|---|---|---|---|---|---|---|---|---|
-| 2026-07-26 | seedling-subscription-launch | routine | Announcement Card ("Launch Card") | silent (per brand) | none — the charm is the motion | single sprouting-seedling charm, green accent reserved for the price, "&" held neutral until the resolve frame | first ship in this brand | plugin sample (square social) | ~11s square, QC clean, reads with sound off |
+| Date | Video | Tier | Style | Audio | Camera | Hero techniques | New capabilities tried | Destinations | Perf note | Rules used |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 2026-09-27 | seedling-subscription-launch | routine | Announcement Card ("Launch Card") | silent (per brand) | one slow push toward the seedling, released on the price | single sprouting-seedling charm plus a particle-burst spark on the unfurl, green accent reserved for the price, "&" held neutral until the resolve frame | stage 3b choreography (motion floor CLI, PASS) | plugin sample (square social) | ~11s square, motion floor PASS, reads with sound off | multi-phase-camera, press-release-spring, particle-burst |
 
 ## Observations
 

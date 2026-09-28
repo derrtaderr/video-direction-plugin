@@ -79,16 +79,28 @@ the build will reuse.
 The beat table drives the composition's timeline (cuts on beat / VO boundaries). One row
 per beat:
 
-| Start time | Role | Content |
-|---|---|---|
-| 0.0s | | |
-| | | |
+| # | Start | Role | Content | Camera | Entrance | State change | Transition out |
+|---|---|---|---|---|---|---|---|
+| 1 | 0.0s | | | | | | |
 
-- **Start time** — when the beat begins.
-- **Role** — for **narrative** styles, the beat's named role in the story spine (setup /
-  turn / transfer / bridge / evidence / thesis / resolve). For **static** styles, the zone
-  or reading-order position it occupies.
-- **Content** — what is on screen and what moves.
+- **#** — the beat number. The composition's scene clip for this beat carries `id="beat-<#>"`.
+- **Start** — when the beat begins, in seconds with the unit (`4.0s`).
+- **Role** — narrative styles: the story-spine role (setup / turn / transfer / bridge /
+  evidence / thesis / resolve). Static styles: the zone or reading-order position.
+- **Content** — what is on screen. **Begin the cell with `[ui]` when the beat shows an
+  interface**; that marker is what the motion floor reads.
+- **Camera, Entrance, State change, Transition out** — filled at **stage 3b** by the Motion
+  Designer, every cell a name from `references/motion-vocabulary.md`. `hold`, `none` and `cut`
+  are names too; a piece never uses `hold` in every camera cell or `cut` at every boundary,
+  and a `[ui]` beat never has `none` for its state change.
+
+**Stage 3b, choreography.** After the beats are timed and before styleframes: fill the four
+motion columns; make sure every signature move from `style.md` appears in them; read
+`style-ledger.md`'s Rules used column and pick at least two names not used in the brand's
+last two videos; write one line under the table naming the piece's **motion signature**, the
+recurring move a viewer will remember. Two bindings are mandatory: a `[ui]` beat names
+`cursor-ui-demo` or another state-change rule; a hero reveal names
+`zoom-out-workspace-reveal` or `camera-journey`.
 
 **Structure check — run the one that fits the style's kind before you time anything:**
 

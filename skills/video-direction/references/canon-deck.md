@@ -94,6 +94,31 @@ Why it anchors Announcement Card: one held frame landing a single fact, the hier
 check (not the story spine) governing it, one charm/character bit as the only motion, and
 silent-legible by construction.
 
+## 4. TypingMind promo (Tony Dinh, 2026) — second anchor for **Launch Film**, the HIGH-MOTION reference
+
+Source: x.com/tdinh_me/status/2103795203157209270/video/1 · 40s · music only, no captions
+
+- **Arc:** nine model logos fly in as labelled spheres at different depths, orbit with
+  comet trails, converge into one orb; the orb becomes the product's input bar as the
+  camera flies into the app; one feature template runs six times at two seconds each; every
+  card flies out into a tilted 3D grid the camera drifts across; a typographic offer beat
+  (drawn strike-through, count-up); the orbit motif bookends.
+- **The feature template:** small-caps eyebrow, two-line headline with line two in the
+  accent, grey sub, a real interface card on the right performing exactly one state change
+  (a cursor clicks, a field takes focus, a focus ring moves, Install becomes a check, toggles
+  flip). Two seconds. Reused six times, which is what reads as design.
+- **Camera, not cuts:** fly-in, orbit, fly-through, drift across the grid. Scene changes are
+  moves through one space.
+- **Motion signatures:** comet trails on anything that travels, spring entrances with
+  letter stagger, depth-of-field on background objects, glow on the focused element, count-up
+  on the one number. Nothing on screen is a screenshot.
+- **Reads muted.** Every beat carries without sound.
+
+Why it anchors Launch Film as the high-motion reference: the same arc as anchor 1 (hook,
+reveal, proof, resolve) carried by continuous camera and a repeated feature template. Use it
+when the brand's register is energetic; use anchor 1 when it is restrained. The look critic
+names which anchor it compared against.
+
 ---
 
 ## Transferable rules extracted

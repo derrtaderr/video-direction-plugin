@@ -74,6 +74,12 @@ _Shipping one master to several places (site hero + feed + vertical)? The per-de
 spec table lives in `templates/delivery-matrix-template.md` — copy it into your project and
 each destination gets its own aspect, length, and finish._
 
+## Motion (optional)
+
+A brand may raise the motion floor for every archetype. It may not lower one. Keys, one per
+line: `rules: <n>`, `transitions: <n>`, `dead-zone: <fraction>`. Leave the section out to
+accept each archetype's own floor (see `references/style-archetypes.md`).
+
 ---
 
 <!--

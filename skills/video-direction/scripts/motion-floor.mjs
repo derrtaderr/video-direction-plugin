@@ -1,0 +1,137 @@
+#!/usr/bin/env node
+// skills/video-direction/scripts/motion-floor.mjs
+// The motion critic. Runs after `npx hyperframes check` and before `npx hyperframes render`.
+// Usage: node motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>] [--ledger style-ledger.md]
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { join, dirname, basename } from "node:path";
+import { homedir } from "node:os";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { parseVocabulary, VOCABULARY_PATH } from "./vocabulary.mjs";
+import { parseArchetypeFloors, parseBrandMotion, resolveFloor } from "./floors.mjs";
+import { parseBoards, lintChoreography } from "./boards.mjs";
+import { parseComposition } from "./composition.mjs";
+import { evaluateFloor } from "./evaluate.mjs";
+import { checkCoverage } from "./coverage.mjs";
+
+const here = dirname(fileURLToPath(import.meta.url));
+const args = process.argv.slice(2);
+const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
+const piece = opt("--piece");
+if (!piece) { console.error("usage: motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>] [--ledger style-ledger.md]"); process.exit(2); }
+
+const compDir = join(piece, "composition");
+const outDir = join(compDir, ".hyperframes", "anim-map");
+mkdirSync(outDir, { recursive: true });
+
+const NEEDS = "a piece needs style.md, boards.md and composition/index.html";
+
+function finish(archetype, result, extra = {}) {
+  const record = { piece, archetype, pass: result.pass, checks: result.checks, ...extra, at: new Date().toISOString() };
+  writeFileSync(join(outDir, "motion-floor.json"), JSON.stringify(record, null, 2));
+  console.log(`MOTION FLOOR ${archetype}: ${result.pass ? "PASS" : "FAIL"}`);
+  for (const c of result.checks) console.log(`  [${c.pass ? "ok" : "FAIL"}] ${c.name}: ${c.evidence}`);
+  for (const n of extra.notes ?? []) console.log(`  note: ${n}`);
+  process.exit(result.pass ? 0 : 1);
+}
+
+// Signature moves are only the numbered lines inside the "**Signature moves" section of
+// style.md. Scanning the whole file would pick up any numbered list (e.g. "Variant axes
+// chosen") and fabricate lint failures for names that were never declared as signature
+// moves.
+function extractSignatureMoves(styleMd) {
+  const lines = styleMd.split("\n");
+  const start = lines.findIndex((l) => /^\*\*Signature moves/.test(l));
+  if (start < 0) return [];
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i++) {
+    if (/^\*\*/.test(lines[i]) || /^##/.test(lines[i])) { end = i; break; }
+  }
+  const slice = lines.slice(start, end).join("\n");
+  return [...slice.matchAll(/^\s*\d+\.\s*`?([a-z0-9-]+)`?/gm)].map((m) => m[1]);
+}
+
+async function main() {
+  const stylePath = join(piece, "style.md");
+  if (!existsSync(stylePath)) return finish("(unknown)", { pass: false, checks: [{ name: "inputs", pass: false, evidence: `missing style.md; ${NEEDS}` }] });
+  const styleMd = readFileSync(stylePath, "utf8");
+  const archetype = (styleMd.match(/\*\*Style from the roster:\*\*\s*([^.\n(]+)/) ?? [])[1]?.trim() ?? "(unknown)";
+  const signatureMoves = extractSignatureMoves(styleMd);
+
+  // A given-but-missing --brand or --ledger path is a fail, not a silent skip: a typo'd
+  // path used to fall through to "no brand section" / "no coverage check" quietly, which
+  // hides the mistake. Absent flags (neither given) keep today's behavior untouched.
+  const brandPath = opt("--brand");
+  if (brandPath && !existsSync(brandPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `--brand ${brandPath} does not exist` }] });
+  const ledgerPath = opt("--ledger");
+  if (ledgerPath && !existsSync(ledgerPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `--ledger ${ledgerPath} does not exist` }] });
+
+  // Resolve the floor before linting: the lint options (whether a move or a named
+  // transition is required) are driven by what this archetype's floor demands.
+  const floors = parseArchetypeFloors(readFileSync(join(here, "..", "references", "style-archetypes.md"), "utf8"));
+  const base = floors.get(archetype);
+  if (!base) return finish(archetype, { pass: false, checks: [{ name: "archetype", pass: false, evidence: `"${archetype}" has no motion floor in style-archetypes.md; name the archetype in style.md as "**Style from the roster:** <name>."` }] });
+  const brand = brandPath ? parseBrandMotion(readFileSync(brandPath, "utf8")) : null;
+  const { floor, notes } = resolveFloor(base, brand);
+
+  const boardsPath = join(piece, "boards.md");
+  if (!existsSync(boardsPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `missing boards.md; ${NEEDS}` }] }, { notes });
+  const vocabulary = parseVocabulary(readFileSync(VOCABULARY_PATH, "utf8"));
+  const beats = parseBoards(readFileSync(boardsPath, "utf8"));
+  const lint = lintChoreography(beats, vocabulary, signatureMoves, { requireTransition: floor.transitions >= 1, requireMove: floor.camera === "every-scene" });
+  if (!lint.pass) return finish(archetype, { pass: false, checks: lint.problems.map((p) => ({ name: "choreography", pass: false, evidence: p })) }, { notes });
+
+  // The composition file has to exist before spawning the animation map against it — no
+  // point paying the ~30-60s map cost only to discover there is nothing to measure.
+  const indexPath = join(compDir, "index.html");
+  if (!existsSync(indexPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `missing composition/index.html; ${NEEDS}` }] }, { notes });
+
+  const FIX = "install or refresh the animation skill with `npx hyperframes skills update`, or point --animation-map at scripts/animation-map.mjs";
+  // An explicit --animation-map or HF_ANIMATION_MAP names one path; if it does not exist
+  // that is the failure, immediately, naming the path. The homedir fallback chain is only
+  // consulted when neither was given, so a test (or a real run) that names a bad path
+  // never silently falls through to whatever happens to be installed on the machine.
+  const explicit = opt("--animation-map") || process.env.HF_ANIMATION_MAP || null;
+  let script = null;
+  let measureNote = null;
+  if (explicit) {
+    if (existsSync(explicit)) script = explicit;
+    else measureNote = `not measured: animation-map script not found at ${explicit} (${FIX})`;
+  } else {
+    const homedirCandidates = [
+      join(homedir(), ".claude", "skills", "hyperframes-animation", "scripts", "animation-map.mjs"),
+      join(homedir(), ".agents", "skills", "hyperframes-animation", "scripts", "animation-map.mjs"),
+    ];
+    script = homedirCandidates.find((p) => existsSync(p));
+    if (!script) measureNote = `not measured: no animation-map script found (${FIX})`;
+  }
+  let map = null;
+  if (script) {
+    // The caller's env is passed through unchanged — no default consent injected here.
+    // Bootstrapping the animation map's own package install is the caller's decision.
+    const r = spawnSync(process.execPath, [script, compDir, "--out", outDir], { encoding: "utf8", env: process.env });
+    const mapPath = join(outDir, "animation-map.json");
+    if (r.status !== 0 || !existsSync(mapPath)) {
+      const output = (r.stderr || r.stdout || "").trim();
+      measureNote = `not measured: animation-map exited ${r.status} (${output.split("\n").pop()}); ${FIX}`;
+      if (output.includes("HYPERFRAMES_SKILL_BOOTSTRAP_DEPS")) {
+        measureNote += " the animation map needs its packages installed once; re-run with HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1 to allow that";
+      }
+    } else map = JSON.parse(readFileSync(mapPath, "utf8"));
+  }
+  if (measureNote) return finish(archetype, { pass: false, checks: [{ name: "measured", pass: false, evidence: measureNote }] }, { notes });
+
+  const composition = parseComposition(readFileSync(indexPath, "utf8"));
+  const result = evaluateFloor({ map, composition, beats, floor, vocabulary });
+  if (composition.problems?.length) result.checks.push({ name: "stamps without id", pass: false, evidence: composition.problems.join("; ") });
+
+  if (ledgerPath) {
+    const cov = checkCoverage(readFileSync(ledgerPath, "utf8"), beats, { exclude: basename(piece) });
+    result.checks.push({ name: "coverage", pass: cov.pass, evidence: cov.evidence });
+  }
+
+  result.pass = result.checks.every((c) => c.pass);
+  return finish(archetype, result, { floor, notes });
+}
+
+await main();
