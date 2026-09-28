@@ -38,7 +38,7 @@ there is nothing to install ahead of time beyond Node 22+ and ffmpeg.
 | 3. Boardomatic | The beat table drives the composition's timeline (clip timing, cuts on beat/VO boundaries). |
 | 3b. Choreography | Each beat's Camera / Entrance / State change / Transition out names a recipe: `hyperframes-animation` rules (`rules/<name>.md`), blueprints (`blueprints/<id>.md`) or a transition. The build instantiates exactly those. |
 | 4. Styleframes | Scaffold first (`npx hyperframes init` inside the piece's `composition/` folder — note `init` may nest a subfolder named after the project; check where it put the files and flatten them into `composition/` if it did), build the still frame, render it with `npx hyperframes snapshot` (skip `check` on deliberate stills — it flags motionless frames), then Read the image and art-direct it. |
-| 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. **Then run the motion critic, before any render:** `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece video-work/<slug> --brand motion-brand.md --ledger style-ledger.md` (the `<plugin>` root is the folder this SKILL.md lives two levels under). It runs the animation skill's animation-map on the composition and reconciles it against the beat table and the archetype's motion floor. `MOTION FLOOR <archetype>: FAIL` names the check, the beat and the vocabulary entry that would satisfy it; fix the composition or the choreography columns and re-run. `not measured` is a fail, never a warning: a piece whose motion cannot be measured does not render. Announce the run; the map takes ~30-60s. |
+| 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. **Then run the motion critic, before any render:** `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece video-work/<slug> --brand motion-brand.md --ledger style-ledger.md` (the `<plugin>` root is the folder this SKILL.md lives two levels under). It runs the animation skill's animation-map on the composition and reconciles it against the beat table and the archetype's motion floor. `MOTION FLOOR <archetype>: FAIL` names the check and the beat that failed; fix the composition or the choreography columns and re-run. `not measured` is a fail, never a warning: a piece whose motion cannot be measured does not render. The first critic run may need to install the animation map's packages; it stops and names `HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1` when it does, and you re-run with that set. Announce the run; the map takes ~30-60s. |
 | 6. QC | **Render with `npx hyperframes render`** for the MP4, then extract stills at each beat and verify against the delivery spec. Then run the blank-still gate: `node <plugin>/skills/video-direction/scripts/stills-check.mjs <the stills folder>`. A still that reads BLANK is a beat that rendered nothing; fix the composition and re-render before presenting. A deliberate black hold is named with `--allow`. |
 
 If a HyperFrames command fails, re-run `npx hyperframes doctor` and `npx hyperframes
@@ -158,7 +158,7 @@ thinking it hung. Renders longer than ~60s should surface progress.
    names `cursor-ui-demo` or another state-change rule; a hero reveal names
    `zoom-out-workspace-reveal` or `camera-journey`. `hold`, `none` and `cut` are names; never
    `hold` in every camera cell, never `cut` at every boundary.
-4. **Styleframes** — NOTE for static single-frame styles (announcement cards, held-frame pieces): stages 4 and 5 naturally collapse — you must build the composition to produce the styleframe, so build the frame first, snapshot it, review it as the styleframe, then finish the motion pass. Say so when it happens; do not pretend two stages ran. For flagship pieces (launch films, anything flagged important):
+4. **Styleframes** — NOTE for static single-frame styles (announcement cards, held-frame pieces): stages 4 and 5 naturally collapse — you must build the composition to produce the styleframe, so build the frame first, snapshot it, review it as the styleframe, then finish the motion pass. Say so when it happens; do not pretend two stages ran. The motion critic still runs before the final render. For flagship pieces (launch films, anything flagged important):
    render TWO fully-designed still frames of the same hero moment in two directions and
    present them for an A/B pick before building. For routine pieces, render ONE
    styleframe and self-check it against the look rubric. A/B comparison happens on
@@ -185,6 +185,8 @@ thinking it hung. Renders longer than ~60s should surface progress.
    motion critic: `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece
    video-work/<slug> --brand motion-brand.md --ledger style-ledger.md`. A FAIL, including `not measured`, means the
    piece does not render; fix the composition or the choreography columns and re-run. The
+   first critic run may need to install the animation map's packages; it stops and names
+   `HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1` when it does, and you re-run with that set. The
    handoff table's stage 5 row carries the full instruction.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract **three stills per beat**
@@ -198,9 +200,10 @@ thinking it hung. Renders longer than ~60s should surface progress.
    project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
    Style, Audio, Camera, Hero techniques, New capabilities tried, Destinations, Perf
    note) — the piece's slug, its style and kind of audio/camera actually shipped, and
-   the destinations it went to, including the new **Rules used** column (the stamped
-   `data-rule` names, comma-separated). No ledger on disk? Note it once (same posture as a
-   missing brand-file section) and continue.
+   the destinations it went to, including the new **Rules used** column (the union of the
+   piece's four choreography column names, excluding `hold`, `none` and `cut`, and the
+   stamped `data-rule` names, comma-separated, deduplicated). No ledger on disk? Note it
+   once (same posture as a missing brand-file section) and continue.
    **Close user-facing, never on bookkeeping.** Present the MP4 path, the poster, and a
    one-line QC summary, then end on the three options: **ship it** (done), **change X**
    (name the artifact the change routes to — `boards.md` for timing, `style.md` or
@@ -295,6 +298,9 @@ for studio audio").
   sourced from the request or the brand's verified materials — never invented.
 - Deterministic and seek-safe: single paused timeline, hard-set state at every scene
   boundary, no wall-clock or randomness.
+- Camera and content tweens on the same element in the same window read as a collision in
+  the animation map. Put the camera move on the camera wrapper and content motion on
+  children, and stagger arrivals.
 
 ## Critic rubrics (run both before QC; they answer different questions)
 

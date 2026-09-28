@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,7 +22,7 @@ function makePiece() {
 | 3 | 8.0s | resolve | wordmark | hold | logo-assemble-lockup | none | cut |
 `);
   writeFileSync(join(dir, "composition", "index.html"), `<div id="root">
-<section id="beat-1" class="clip" data-start="0" data-duration="4.5" data-transition="push-slide"><div id="cam-beat-1" class="camera"><h1 id="h1" data-rule="press-release-spring">x</h1></div></section>
+<section id="beat-1" class="clip" data-start="0" data-duration="4.5" data-transition="push-slide"><div id="cam-beat-1" class="camera"><h1 id="h1" data-rule="press-release-spring">x</h1><span id="beat-1-out" data-rule="push-slide"></span></div></section>
 <section id="beat-2" class="clip" data-start="4" data-duration="4"><div id="cam-beat-2" class="camera"><div id="picker" data-rule="cursor-ui-demo"></div><div id="slam" data-rule="kinetic-beat-slam"></div></div></section>
 <section id="beat-3" class="clip" data-start="8" data-duration="3"><div id="cam-beat-3" class="camera"><div id="mark" data-rule="logo-assemble-lockup"></div></div></section>
 </div>`);
@@ -88,6 +88,38 @@ test("no --animation-map and no HF_ANIMATION_MAP with nothing installed is FAIL 
   });
   assert.equal(r.status, 1);
   assert.match(r.stdout, /not measured: no animation-map script found/);
+});
+
+test("a --brand path that does not exist is FAIL inputs, exit 1", () => {
+  const r = spawnSync(process.execPath, [CLI, "--piece", makePiece(), "--animation-map", FAKE, "--brand", "/nope/motion-brand.md"], { encoding: "utf8" });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /\[FAIL\] inputs/);
+  assert.match(r.stdout, /--brand \/nope\/motion-brand\.md does not exist/);
+});
+
+test("a --ledger path that does not exist is FAIL inputs, exit 1", () => {
+  const r = spawnSync(process.execPath, [CLI, "--piece", makePiece(), "--animation-map", FAKE, "--ledger", "/nope/style-ledger.md"], { encoding: "utf8" });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /\[FAIL\] inputs/);
+  assert.match(r.stdout, /--ledger \/nope\/style-ledger\.md does not exist/);
+});
+
+test("a map script that needs bootstrap consent names the env var to re-run with", () => {
+  const r = run(makePiece(), { FAKE_MAP_MODE: "needs-bootstrap" });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /not measured/);
+  assert.match(r.stdout, /re-run with HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1 to allow that/);
+});
+
+test("a missing composition/index.html is FAIL inputs before the map is ever spawned", () => {
+  const piece = makePiece();
+  rmSync(join(piece, "composition", "index.html"));
+  // Point --animation-map at a script that would exit nonzero if it were ever run, so a
+  // pass here only happens because the guard fired before the spawn, not by accident.
+  const r = spawnSync(process.execPath, [CLI, "--piece", piece, "--animation-map", join(here, "fixtures", "fake-animation-map.mjs")], { encoding: "utf8", env: { ...process.env, FAKE_MAP_MODE: "crash" } });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /\[FAIL\] inputs: missing composition\/index\.html/);
+  assert.doesNotMatch(r.stdout, /not measured/);
 });
 
 test("choreography lint failures stop before measuring", () => {

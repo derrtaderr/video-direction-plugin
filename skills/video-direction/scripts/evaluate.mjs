@@ -3,7 +3,7 @@ const BAD_FLAGS = new Set(["offscreen", "invisible", "degenerate", "collision"])
 
 const overlaps = (t, a, b) => t.start < b && t.end > a;
 
-export function evaluateFloor({ map, composition, beats, floor }) {
+export function evaluateFloor({ map, composition, beats, floor, vocabulary }) {
   const checks = [];
   const add = (name, pass, evidence) => checks.push({ name, pass, evidence });
 
@@ -42,6 +42,7 @@ export function evaluateFloor({ map, composition, beats, floor }) {
     if (!clip) continue;
     const declared = [b.entrance, b.state, b.camera].filter((x) => x && !["hold", "none"].includes(x));
     for (const s of clip.stamps) {
+      if (vocabulary && vocabulary.all && !vocabulary.all.has(s.rule)) { stampProblems.push(`#${s.id} (${s.rule}) is not a vocabulary name`); continue; }
       if (tweensFor(`#${s.id}`).length) liveRules.add(s.rule);
       else stampProblems.push(`#${s.id} (${s.rule}) has no tween`);
     }
@@ -58,18 +59,32 @@ export function evaluateFloor({ map, composition, beats, floor }) {
   const distinct = new Set(liveRules);
   add("distinct rules", distinct.size >= floor.rules, `${distinct.size} of ${floor.rules}: ${[...distinct].join(", ")}`);
 
-  // transitions
+  // transitions: a declared transition (anything but cut) needs BOTH the structural
+  // overlap between clips AND a stamped element carrying that transition's name whose
+  // tweens fall inside the overlap window [next.start, prev.end]. A clip-level crossfade
+  // makes the map flag a collision between the two clip wrappers; that is handled as an
+  // exemption in the map-flags check below, not here.
   const sorted = [...composition.clips].sort((a, b) => a.start - b.start);
   let overlapsCount = 0;
   const transitionProblems = [];
   for (let i = 0; i < sorted.length - 1; i++) {
-    const beat = beats.find((b) => b.n === sorted[i].n);
-    const declaredName = beat?.transition && beat.transition !== "cut";
-    const hasOverlap = sorted[i + 1].start < sorted[i].end;
-    if (declaredName && hasOverlap) overlapsCount++;
-    else if (declaredName) transitionProblems.push(`beat ${sorted[i].n} declares ${beat.transition} but clip beat-${sorted[i + 1].n} starts at ${sorted[i + 1].start}, after beat-${sorted[i].n} ends at ${sorted[i].end}; no overlap window`);
+    const prev = sorted[i];
+    const next = sorted[i + 1];
+    const beat = beats.find((b) => b.n === prev.n);
+    const name = beat?.transition && beat.transition !== "cut" ? beat.transition : null;
+    if (!name) continue;
+    const windowStart = next.start;
+    const windowEnd = prev.end;
+    const hasOverlap = windowStart < windowEnd;
+    const candidates = [...prev.stamps, ...next.stamps].filter((s) => s.rule === name);
+    const hasMotion = candidates.some((s) => tweensFor(`#${s.id}`).some((t) => overlaps(t, windowStart, windowEnd)));
+    if (hasOverlap && hasMotion) { overlapsCount++; continue; }
+    const missing = [];
+    if (!hasOverlap) missing.push("overlap");
+    if (!hasMotion) missing.push("motion");
+    transitionProblems.push(`beat ${prev.n} declares ${name} but ${missing.join(" and ")} missing (window [${windowStart}, ${windowEnd}])`);
   }
-  add("transitions", overlapsCount >= floor.transitions && transitionProblems.length === 0, transitionProblems.length ? transitionProblems.join("; ") : `${overlapsCount} of ${floor.transitions} named transitions with overlap`);
+  add("transitions", overlapsCount >= floor.transitions && transitionProblems.length === 0, transitionProblems.length ? transitionProblems.join("; ") : `${overlapsCount} of ${floor.transitions} named transitions with overlap and motion`);
 
   // state change
   if (floor.stateChange === "ui-beats") {
@@ -89,8 +104,17 @@ export function evaluateFloor({ map, composition, beats, floor }) {
     add("dead zones", frac <= floor.deadZone, `${(frac * 100).toFixed(1)}% dead against a ${(floor.deadZone * 100).toFixed(0)}% cap`);
   } else add("dead zones", true, "no cap for this floor");
 
-  // map flags
-  const flagged = map.tweens.filter((t) => (t.flags ?? []).some((f) => BAD_FLAGS.has(f)));
+  // map flags. A clip-level crossfade legitimately makes the map flag a `collision`
+  // between the two clip wrappers (#beat-<n>); that flag alone is exempt on those
+  // selectors. Any other bad flag on a clip wrapper, or any bad flag anywhere else,
+  // still fails.
+  const CLIP_WRAPPER = /^#beat-\d+$/;
+  const flagged = map.tweens.filter((t) => {
+    const bad = (t.flags ?? []).filter((f) => BAD_FLAGS.has(f));
+    if (!bad.length) return false;
+    const remaining = CLIP_WRAPPER.test(t.selector) ? bad.filter((f) => f !== "collision") : bad;
+    return remaining.length > 0;
+  });
   add("map flags", flagged.length === 0, flagged.length ? flagged.map((t) => `${t.selector}: ${t.flags.join(",")} (${t.summary})`).join("; ") : "no offscreen, invisible, degenerate or colliding tweens");
 
   return { pass: checks.every((c) => c.pass), checks };

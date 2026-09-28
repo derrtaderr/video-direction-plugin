@@ -58,13 +58,20 @@ async function main() {
   const archetype = (styleMd.match(/\*\*Style from the roster:\*\*\s*([^.\n(]+)/) ?? [])[1]?.trim() ?? "(unknown)";
   const signatureMoves = extractSignatureMoves(styleMd);
 
+  // A given-but-missing --brand or --ledger path is a fail, not a silent skip: a typo'd
+  // path used to fall through to "no brand section" / "no coverage check" quietly, which
+  // hides the mistake. Absent flags (neither given) keep today's behavior untouched.
+  const brandPath = opt("--brand");
+  if (brandPath && !existsSync(brandPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `--brand ${brandPath} does not exist` }] });
+  const ledgerPath = opt("--ledger");
+  if (ledgerPath && !existsSync(ledgerPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `--ledger ${ledgerPath} does not exist` }] });
+
   // Resolve the floor before linting: the lint options (whether a move or a named
   // transition is required) are driven by what this archetype's floor demands.
   const floors = parseArchetypeFloors(readFileSync(join(here, "..", "references", "style-archetypes.md"), "utf8"));
   const base = floors.get(archetype);
   if (!base) return finish(archetype, { pass: false, checks: [{ name: "archetype", pass: false, evidence: `"${archetype}" has no motion floor in style-archetypes.md; name the archetype in style.md as "**Style from the roster:** <name>."` }] });
-  const brandPath = opt("--brand");
-  const brand = brandPath && existsSync(brandPath) ? parseBrandMotion(readFileSync(brandPath, "utf8")) : null;
+  const brand = brandPath ? parseBrandMotion(readFileSync(brandPath, "utf8")) : null;
   const { floor, notes } = resolveFloor(base, brand);
 
   const boardsPath = join(piece, "boards.md");
@@ -73,6 +80,11 @@ async function main() {
   const beats = parseBoards(readFileSync(boardsPath, "utf8"));
   const lint = lintChoreography(beats, vocabulary, signatureMoves, { requireTransition: floor.transitions >= 1, requireMove: floor.camera === "every-scene" });
   if (!lint.pass) return finish(archetype, { pass: false, checks: lint.problems.map((p) => ({ name: "choreography", pass: false, evidence: p })) }, { notes });
+
+  // The composition file has to exist before spawning the animation map against it — no
+  // point paying the ~30-60s map cost only to discover there is nothing to measure.
+  const indexPath = join(compDir, "index.html");
+  if (!existsSync(indexPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `missing composition/index.html; ${NEEDS}` }] }, { notes });
 
   const FIX = "install or refresh the animation skill with `npx hyperframes skills update`, or point --animation-map at scripts/animation-map.mjs";
   // An explicit --animation-map or HF_ANIMATION_MAP names one path; if it does not exist
@@ -95,21 +107,25 @@ async function main() {
   }
   let map = null;
   if (script) {
-    const r = spawnSync(process.execPath, [script, compDir, "--out", outDir], { encoding: "utf8", env: { ...process.env, HYPERFRAMES_SKILL_BOOTSTRAP_DEPS: process.env.HYPERFRAMES_SKILL_BOOTSTRAP_DEPS ?? "1" } });
+    // The caller's env is passed through unchanged — no default consent injected here.
+    // Bootstrapping the animation map's own package install is the caller's decision.
+    const r = spawnSync(process.execPath, [script, compDir, "--out", outDir], { encoding: "utf8", env: process.env });
     const mapPath = join(outDir, "animation-map.json");
-    if (r.status !== 0 || !existsSync(mapPath)) measureNote = `not measured: animation-map exited ${r.status} (${(r.stderr || r.stdout || "").trim().split("\n").pop()}); ${FIX}`;
-    else map = JSON.parse(readFileSync(mapPath, "utf8"));
+    if (r.status !== 0 || !existsSync(mapPath)) {
+      const output = (r.stderr || r.stdout || "").trim();
+      measureNote = `not measured: animation-map exited ${r.status} (${output.split("\n").pop()}); ${FIX}`;
+      if (output.includes("HYPERFRAMES_SKILL_BOOTSTRAP_DEPS")) {
+        measureNote += " the animation map needs its packages installed once; re-run with HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1 to allow that";
+      }
+    } else map = JSON.parse(readFileSync(mapPath, "utf8"));
   }
   if (measureNote) return finish(archetype, { pass: false, checks: [{ name: "measured", pass: false, evidence: measureNote }] }, { notes });
 
-  const indexPath = join(compDir, "index.html");
-  if (!existsSync(indexPath)) return finish(archetype, { pass: false, checks: [{ name: "inputs", pass: false, evidence: `missing composition/index.html; ${NEEDS}` }] }, { notes });
   const composition = parseComposition(readFileSync(indexPath, "utf8"));
-  const result = evaluateFloor({ map, composition, beats, floor });
+  const result = evaluateFloor({ map, composition, beats, floor, vocabulary });
   if (composition.problems?.length) result.checks.push({ name: "stamps without id", pass: false, evidence: composition.problems.join("; ") });
 
-  const ledgerPath = opt("--ledger");
-  if (ledgerPath && existsSync(ledgerPath)) {
+  if (ledgerPath) {
     const cov = checkCoverage(readFileSync(ledgerPath, "utf8"), beats, { exclude: basename(piece) });
     result.checks.push({ name: "coverage", pass: cov.pass, evidence: cov.evidence });
   }

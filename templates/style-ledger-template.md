@@ -40,10 +40,11 @@ it when scaffolding).
 - **Destinations** — where it shipped (the rows from your delivery matrix).
 - **Perf note** — the QC or performance read after it went out; a one-line gut check, not
   a report.
-- **Rules used** — the `data-rule` names the composition stamped, comma-separated. Stage 3b
-  reads the last two rows here and must choose at least two names that do not appear in
-  them, so the brand works its way through the motion library instead of repeating four
-  moves.
+- **Rules used** — the union of the piece's four choreography column names (Camera,
+  Entrance, State change, Transition out; excluding `hold`, `none` and `cut`) and the
+  stamped `data-rule` names, comma-separated, deduplicated. Stage 3b reads the last two
+  rows here and must choose at least two names that do not appear in them, so the brand
+  works its way through the motion library instead of repeating four moves.
 
 ## Observations
 

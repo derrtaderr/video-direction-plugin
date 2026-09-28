@@ -99,6 +99,7 @@ Next: ask for your next video, or run `/brand-init` and pick **edit** to adjust 
 - **ffmpeg** (renders composite audio and video).
 - **HyperFrames** — the rendering framework. Nothing to install ahead of time; it is
   fetched on demand via `npx hyperframes …`.
+- Run the plugin's own tests with `node --test 'skills/video-direction/scripts/**/*.test.mjs'` from the plugin root.
 
 **Preflight:** run `npx hyperframes doctor` once before your first render. It checks
 Chrome, ffmpeg, and Node and names the exact fix for anything missing. The first `npx`
