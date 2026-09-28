@@ -3,7 +3,7 @@
 // The motion critic. Runs after `npx hyperframes check` and before `npx hyperframes render`.
 // Usage: node motion-floor.mjs --piece video-work/<slug> [--brand motion-brand.md] [--animation-map <path>] [--ledger style-ledger.md]
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { homedir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -110,7 +110,7 @@ async function main() {
 
   const ledgerPath = opt("--ledger");
   if (ledgerPath && existsSync(ledgerPath)) {
-    const cov = checkCoverage(readFileSync(ledgerPath, "utf8"), beats);
+    const cov = checkCoverage(readFileSync(ledgerPath, "utf8"), beats, { exclude: basename(piece) });
     result.checks.push({ name: "coverage", pass: cov.pass, evidence: cov.evidence });
   }
 

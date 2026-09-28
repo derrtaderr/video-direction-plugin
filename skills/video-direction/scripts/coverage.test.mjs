@@ -31,3 +31,15 @@ test("an empty ledger passes: everything is fresh", () => {
   const r = checkCoverage("# Style ledger\n", [beat({})]);
   assert.equal(r.pass, true);
 });
+
+test("the piece's own ledger row is excluded from the window", () => {
+  const ledger = `# Style ledger
+| Date | Video | Tier | Style | Audio | Camera | Hero techniques | New capabilities tried | Destinations | Perf note | Rules used |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 2026-09-01 | a | flagship | Launch Film | bed | push | x | y | li | | press-release-spring |
+| 2026-09-27 | me | routine | Announcement Card | silent | drift | x | y | li | | multi-phase-camera, press-release-spring, particle-burst |
+`;
+  const beats = [beat({ camera: "multi-phase-camera", entrance: "particle-burst" })];
+  assert.equal(checkCoverage(ledger, beats, { exclude: "me" }).pass, true);
+  assert.equal(checkCoverage(ledger, beats).pass, false);
+});

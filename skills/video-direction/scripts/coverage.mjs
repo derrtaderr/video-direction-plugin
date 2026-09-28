@@ -4,11 +4,16 @@
 // repeating four moves. `hold`, `none` and `cut` are placeholders, never names.
 const PLACEHOLDERS = new Set(["hold", "none", "cut"]);
 
-export function checkCoverage(ledgerMarkdown, beats, { window = 2, required = 2 } = {}) {
+export function checkCoverage(ledgerMarkdown, beats, { window = 2, required = 2, exclude = null } = {}) {
   const lines = ledgerMarkdown.split("\n").filter((l) => l.startsWith("|"));
   const header = lines[0]?.split("|").slice(1, -1).map((c) => c.trim().toLowerCase()) ?? [];
   const col = header.indexOf("rules used");
-  const rows = lines.slice(2).map((l) => l.split("|").slice(1, -1).map((c) => c.trim())).filter((r) => r.some(Boolean));
+  const videoCol = header.indexOf("video");
+  let rows = lines.slice(2).map((l) => l.split("|").slice(1, -1).map((c) => c.trim())).filter((r) => r.some(Boolean));
+  // The piece being checked may already have its own row in the ledger (QC has run and
+  // appended it before this call, or this is a re-check after ship). That row is not
+  // history to be stale against; it IS the piece, so it never competes with itself.
+  if (exclude != null && videoCol >= 0) rows = rows.filter((r) => r[videoCol] !== exclude);
   const mine = new Set(beats.flatMap((b) => [b.camera, b.entrance, b.state, b.transition]).filter((x) => x && !PLACEHOLDERS.has(x)));
 
   // A ledger without a "Rules used" column, or with no shipped rows yet, has no history

@@ -6,7 +6,7 @@ successful render.
 
 | Date | Video | Tier | Style | Audio | Camera | Hero techniques | New capabilities tried | Destinations | Perf note | Rules used |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 2026-09-27 | seedling-subscription-launch | routine | Announcement Card ("Launch Card") | silent (per brand) | one slow push toward the seedling, released on the price | single sprouting-seedling charm plus an honest particle-burst spark on the unfurl, green accent reserved for the price, "&" held neutral until the resolve frame | stage 3b choreography (motion floor CLI, PASS) | plugin sample (square social) | ~11s square, motion floor PASS, reads with sound off | multi-phase-camera, press-release-spring, particle-burst |
+| 2026-09-27 | seedling-subscription-launch | routine | Announcement Card ("Launch Card") | silent (per brand) | one slow push toward the seedling, released on the price | single sprouting-seedling charm plus a particle-burst spark on the unfurl, green accent reserved for the price, "&" held neutral until the resolve frame | stage 3b choreography (motion floor CLI, PASS) | plugin sample (square social) | ~11s square, motion floor PASS, reads with sound off | multi-phase-camera, press-release-spring, particle-burst |
 
 ## Observations
 
