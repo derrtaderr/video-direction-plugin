@@ -33,6 +33,21 @@ function run(piece, env = {}) {
   return spawnSync(process.execPath, [CLI, "--piece", piece, "--animation-map", FAKE], { encoding: "utf8", env: { ...process.env, ...env } });
 }
 
+function makeAnnouncementCardPiece() {
+  const dir = mkdtempSync(join(tmpdir(), "piece-"));
+  mkdirSync(join(dir, "composition"), { recursive: true });
+  writeFileSync(join(dir, "style.md"), "# Style\n\n**Style from the roster:** Announcement Card.\n");
+  writeFileSync(join(dir, "boards.md"), `# Boards
+| # | Start | Role | Content | Camera | Entrance | State change | Transition out |
+|---|---|---|---|---|---|---|---|
+| 1 | 0.0s | card | held card | hold | press-release-spring | none | cut |
+`);
+  writeFileSync(join(dir, "composition", "index.html"), `<div id="root">
+<section id="beat-1" class="clip" data-start="0" data-duration="11"><div id="cam-beat-1" class="camera"><h1 id="h1" data-rule="press-release-spring">x</h1><div id="mark" data-rule="logo-assemble-lockup"></div></div></section>
+</div>`);
+  return dir;
+}
+
 test("passes on a good piece and writes motion-floor.json", () => {
   const piece = makePiece();
   const r = run(piece);
@@ -58,10 +73,21 @@ test("a crashing map script is FAIL not measured with the fix named, exit 1", ()
   assert.ok(existsSync(join(piece, "composition", ".hyperframes", "anim-map", "motion-floor.json")));
 });
 
-test("a missing animation-map script is FAIL not measured, exit 1", () => {
+test("an explicit --animation-map that does not exist is FAIL not measured naming that path, exit 1", () => {
   const r = spawnSync(process.execPath, [CLI, "--piece", makePiece(), "--animation-map", "/nonexistent/animation-map.mjs"], { encoding: "utf8" });
   assert.equal(r.status, 1);
   assert.match(r.stdout, /not measured/);
+  assert.match(r.stdout, /\/nonexistent\/animation-map\.mjs/);
+});
+
+test("no --animation-map and no HF_ANIMATION_MAP with nothing installed is FAIL not measured, exit 1", () => {
+  const emptyHome = mkdtempSync(join(tmpdir(), "home-"));
+  const r = spawnSync(process.execPath, [CLI, "--piece", makePiece()], {
+    encoding: "utf8",
+    env: { ...process.env, HOME: emptyHome, HF_ANIMATION_MAP: "" },
+  });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /not measured: no animation-map script found/);
 });
 
 test("choreography lint failures stop before measuring", () => {
@@ -70,6 +96,32 @@ test("choreography lint failures stop before measuring", () => {
   const r = run(piece);
   assert.equal(r.status, 1);
   assert.match(r.stdout, /no choreography table/);
+});
+
+test("a piece with no style.md is FAIL inputs, exit 1, and still writes motion-floor.json", () => {
+  const dir = mkdtempSync(join(tmpdir(), "piece-"));
+  mkdirSync(join(dir, "composition"), { recursive: true });
+  const r = run(dir);
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /\[FAIL\] inputs: missing style\.md/);
+  assert.ok(existsSync(join(dir, "composition", ".hyperframes", "anim-map", "motion-floor.json")));
+});
+
+test("signature moves are scoped to the Signature moves section, not any numbered list", () => {
+  const piece = makePiece();
+  writeFileSync(join(piece, "style.md"), "# Style\n\n**Style from the roster:** Launch Film.\n**Signature moves (2–3 chosen):**\n1. multi-phase-camera\n**Variant axes chosen:**\n1. layout-centered\n2. accent-price\n");
+  const r = run(piece);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /MOTION FLOOR Launch Film: PASS/);
+  assert.doesNotMatch(r.stdout, /layout-centered/);
+});
+
+test("floor-driven lint options let a one-drift, no-transition archetype pass with hold and cut", () => {
+  const piece = makeAnnouncementCardPiece();
+  const r = run(piece);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /MOTION FLOOR Announcement Card: PASS/);
+  assert.doesNotMatch(r.stdout, /hold in every camera cell/);
 });
 
 test("usage error without --piece exits 2", () => {
