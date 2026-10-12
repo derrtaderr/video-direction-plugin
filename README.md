@@ -26,22 +26,9 @@ before it renders and fails it under the archetype's floor; and each new video h
 for moves the brand has not used in its last two. The result is videos that read as
 designed rather than assembled.
 
-## Proof
-
-<!-- PROOF VIDEO GOES HERE: three brands, one system, side by side. -->
-<!-- Replace this block with the embedded proof render once it exists. -->
-
-> _Proof video coming — three different brands run through the same process, each
-> looking unmistakably its own._
-
 ## Install
 
-Two commands inside Claude Code:
-
-```
-/plugin marketplace add derrtaderr/video-direction-plugin
-/plugin install video-direction@video-direction
-```
+Run the two commands at the [top of this page](#video-direction) inside Claude Code.
 
 Working from a local clone instead? Point the first command at the folder:
 `/plugin marketplace add /path/to/video-direction-plugin`
