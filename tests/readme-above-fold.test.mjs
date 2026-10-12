@@ -103,3 +103,20 @@ test('every relative link and image above the fold exists on disk', () => {
   assert.ok(targets.length >= 3, `expected the GIF and its links, found ${targets.length}`);
   for (const t of targets) assert.ok(existsSync(join(ROOT, t)), `${t} does not exist`);
 });
+
+// The README's own test command must run this file too, and it belongs to
+// contributors, not to the user's Prerequisites list.
+function section(title) {
+  const start = lines.findIndex((l) => l === `## ${title}`);
+  if (start === -1) return null;
+  const end = lines.findIndex((l, i) => i > start && /^## /.test(l));
+  return lines.slice(start + 1, end === -1 ? undefined : end).join('\n');
+}
+
+test('the documented test command runs the README contract too', () => {
+  const cmd = readme.match(/`(node --test [^`]+)`/);
+  assert.ok(cmd, 'no node --test command in the README');
+  assert.match(cmd[1], /skills\/video-direction\/scripts\/\*\*\/\*\.test\.mjs/);
+  assert.match(cmd[1], /tests\/\*\.test\.mjs/);
+  assert.doesNotMatch(section('Prerequisites') ?? '', /node --test/);
+});
