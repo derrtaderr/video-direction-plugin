@@ -111,6 +111,6 @@ With that green, run `/brand-init` to build your brand and make your first video
 
 Early, but the core loop works. The `video-direction` skill (the studio process) and
 `/brand-init` (the taste-by-comparison brand interview, ending in a proof styleframe) both
-run today. The proof video for the top of this README is what's coming next.
+run today. Next is a film that runs three different brands through the same process, side by side.
 
 To start now, run `/brand-init`.
