@@ -68,3 +68,12 @@ test('one code block with the two install commands follows the visual', () => {
     `/plugin install ${plugin}@${manifest.name}`,
   ]);
 });
+
+test('the install commands appear once, so the two copies cannot drift', () => {
+  const adds = readme.split('\n').filter((l) => l.trim().startsWith('/plugin install '));
+  assert.equal(adds.length, 1, `found ${adds.length} install lines`);
+});
+
+test('no proof placeholder survives once the visual ships', () => {
+  assert.doesNotMatch(readme, /PROOF VIDEO GOES HERE|Proof video coming/);
+});
