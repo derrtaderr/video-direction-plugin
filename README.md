@@ -6,7 +6,7 @@ A Claude Code plugin that gives AI-made brand videos a director, so they stop lo
 
 <sub>An 11 second launch card the plugin directed end to end for Fern and Field, a fictional demo brand. The full render and every stage behind it live in <a href="examples/fern-and-field/">examples/fern-and-field</a>.</sub>
 
-Install it with two commands inside Claude Code.
+Install it with two commands inside Claude Code or Claude Cowork.
 
 ```
 /plugin marketplace add derrtaderr/video-direction-plugin
@@ -28,12 +28,12 @@ designed rather than assembled.
 
 ## Install
 
-Run the two commands at the [top of this page](#video-direction) inside Claude Code.
+Run the two commands at the [top of this page](#video-direction) inside Claude Code or Claude Cowork.
 
 Working from a local clone instead? Point the first command at the folder:
 `/plugin marketplace add /path/to/video-direction-plugin`
 
-The install copies everything into your own Claude Code config, so it keeps working even
+The install copies everything into your own Claude config, so it keeps working even
 if you delete the downloaded folder. It runs entirely on your machine and your Claude
 subscription.
 
@@ -92,7 +92,7 @@ Next: ask for your next video, or run `/brand-init` and pick **edit** to adjust 
 
 ## Prerequisites
 
-- **Claude Code** (this is a Claude Code plugin).
+- **Claude Code** or **Claude Cowork**. It installs and runs in either; the brand interview and rendering both work on each (Cowork verified 2026-08-05, interview end to end including the proof frame).
 - **Node 22+**.
 - **ffmpeg** (renders composite audio and video).
 - **HyperFrames** — the rendering framework. Nothing to install ahead of time; it is
