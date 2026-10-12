@@ -3,7 +3,7 @@
 // all within the first FOLD lines.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -78,4 +78,28 @@ test('no proof placeholder survives once the visual ships', () => {
   assert.doesNotMatch(readme, /PROOF VIDEO GOES HERE|Proof video coming/i);
   // The hero is now a shipped film, so no line may promise a proof video for the top.
   assert.doesNotMatch(readme, /proof video for the top/i);
+});
+
+// GitHub's heading anchor: lowercase, drop punctuation other than hyphens and
+// spaces, spaces become hyphens.
+const slug = (heading) =>
+  heading.trim().toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/\s/g, '-');
+
+test('every in-page anchor points at a heading that exists', () => {
+  const slugs = new Set(
+    lines.filter((l) => /^#{1,6}\s/.test(l)).map((l) => slug(l.replace(/^#+\s*/, ''))),
+  );
+  const anchors = [...readme.matchAll(/\]\(#([^)\s]+)\)/g)].map((m) => m[1]);
+  assert.ok(anchors.includes('video-direction'), 'the Install section must point up to the top');
+  for (const a of anchors) assert.ok(slugs.has(a), `#${a} matches no heading`);
+});
+
+test('every relative link and image above the fold exists on disk', () => {
+  const text = fold.join('\n');
+  const targets = [
+    ...[...text.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]),
+    ...[...text.matchAll(/(?:href|src)="([^"]+)"/g)].map((m) => m[1]),
+  ].filter((t) => !/^(https?:|#|mailto:)/.test(t));
+  assert.ok(targets.length >= 3, `expected the GIF and its links, found ${targets.length}`);
+  for (const t of targets) assert.ok(existsSync(join(ROOT, t)), `${t} does not exist`);
 });
