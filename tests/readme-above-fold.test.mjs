@@ -75,5 +75,7 @@ test('the install commands appear once, so the two copies cannot drift', () => {
 });
 
 test('no proof placeholder survives once the visual ships', () => {
-  assert.doesNotMatch(readme, /PROOF VIDEO GOES HERE|Proof video coming/);
+  assert.doesNotMatch(readme, /PROOF VIDEO GOES HERE|Proof video coming/i);
+  // The hero is now a shipped film, so no line may promise a proof video for the top.
+  assert.doesNotMatch(readme, /proof video for the top/i);
 });
