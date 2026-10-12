@@ -1,6 +1,6 @@
 # Video Direction
 
-A studio process for AI-built brand videos. Stops every video looking the same.
+A Claude Code plugin that gives AI-made brand videos a director, so they stop looking generic.
 
 You can one-shot-prompt a brand video in a minute, and it will look like every other
 one-shot-prompted video, because nothing forced a look decision. This plugin is the
