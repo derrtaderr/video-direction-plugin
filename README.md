@@ -2,6 +2,10 @@
 
 A Claude Code plugin that gives AI-made brand videos a director, so they stop looking generic.
 
+[![An 11 second launch card the plugin directed for Fern and Field, a fictional demo brand](docs/media/fern-and-field-launch-card.gif)](examples/fern-and-field/)
+
+<sub>An 11 second launch card the plugin directed end to end for Fern and Field, a fictional demo brand. The full render and every stage behind it live in <a href="examples/fern-and-field/">examples/fern-and-field</a>.</sub>
+
 You can one-shot-prompt a brand video in a minute, and it will look like every other
 one-shot-prompted video, because nothing forced a look decision. This plugin is the
 director's seat you skipped. It runs a staged studio process (treatment, style, boards,
