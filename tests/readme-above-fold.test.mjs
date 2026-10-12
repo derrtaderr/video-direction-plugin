@@ -37,3 +37,34 @@ test('a committed visual under 5 MB follows the promise', () => {
   const size = statSync(join(ROOT, src)).size;
   assert.ok(size > 0 && size < MAX_BYTES, `${src} is ${size} bytes, must be under 5 MB`);
 });
+
+const REPO_SLUG = 'derrtaderr/video-direction-plugin';
+const manifest = JSON.parse(
+  readFileSync(join(ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'),
+);
+
+// The fenced code blocks in the README, with the line each one opens on.
+function codeBlocks(text) {
+  const out = [];
+  let open = null;
+  text.split('\n').forEach((line, i) => {
+    if (/^```/.test(line)) {
+      if (open) { out.push(open); open = null; } else { open = { at: i, body: [] }; }
+    } else if (open) {
+      open.body.push(line);
+    }
+  });
+  return out;
+}
+
+test('one code block with the two install commands follows the visual', () => {
+  const imageAt = indexOf((l) => IMAGE.test(l));
+  const block = codeBlocks(readme).find((b) => b.at < FOLD);
+  assert.ok(block, 'no code block above the fold');
+  assert.ok(block.at > imageAt, 'install block must come after the visual');
+  const plugin = manifest.plugins[0].name;
+  assert.deepEqual(block.body.filter((l) => l.trim() !== ''), [
+    `/plugin marketplace add ${REPO_SLUG}`,
+    `/plugin install ${plugin}@${manifest.name}`,
+  ]);
+});
