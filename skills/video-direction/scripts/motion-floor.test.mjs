@@ -160,3 +160,21 @@ test("usage error without --piece exits 2", () => {
   const r = spawnSync(process.execPath, [CLI], { encoding: "utf8" });
   assert.equal(r.status, 2);
 });
+
+test("a line pulled before it can be read FAILS read time, naming the element", () => {
+  const piece = makePiece();
+  const html = readFileSync(join(piece, "composition", "index.html"), "utf8").replace('data-rule="press-release-spring">x</h1>', 'data-rule="press-release-spring">one two three four five six seven eight nine ten eleven twelve</h1>');
+  writeFileSync(join(piece, "composition", "index.html"), html);
+  const r = run(piece);
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout, /\[FAIL\] read time: #h1 "one two three .* twelve" settled 3\.00s, needs 3\.60s \(12 words\)/);
+});
+
+test("the same line stamped data-texture is exempt", () => {
+  const piece = makePiece();
+  const html = readFileSync(join(piece, "composition", "index.html"), "utf8").replace('data-rule="press-release-spring">x</h1>', 'data-rule="press-release-spring" data-texture>one two three four five six seven eight nine ten eleven twelve</h1>');
+  writeFileSync(join(piece, "composition", "index.html"), html);
+  const r = run(piece);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /\[ok\] read time: .*1 texture exempt/);
+});

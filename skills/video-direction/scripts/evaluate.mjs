@@ -117,5 +117,54 @@ export function evaluateFloor({ map, composition, beats, floor, vocabulary }) {
   });
   add("map flags", flagged.length === 0, flagged.length ? flagged.map((t) => `${t.selector}: ${t.flags.join(",")} (${t.summary})`).join("; ") : "no offscreen, invisible, degenerate or colliding tweens");
 
+  // read time. Pace comes from motion and cuts, never from pulling text away early: a line
+  // the viewer is meant to read stays settled for READ_PER_WORD per word, never under
+  // READ_FLOOR. Settled runs from when the line is fully on screen (the end of its own and
+  // every id-bearing ancestor's entrance) to when its exit starts (a tween that fades it or
+  // an ancestor below half opacity) or its clip's window ends (the next clip's start when
+  // they overlap). Text stamped data-texture is exempt. Only callers that parsed the text
+  // (composition.readables) get the check.
+  if (composition.readables) {
+    const late = [];
+    const readable = composition.readables.filter((r) => !r.texture);
+    for (const r of readable) {
+      const clip = composition.clips.find((c) => c.id === r.clip);
+      if (!clip) continue;
+      const next = sorted.find((c) => c.start > clip.start);
+      let on = clip.start;
+      let off = next && next.start < clip.end ? next.start : clip.end;
+      for (const id of [...r.ancestors, r.id]) {
+        const { entranceEnd, exitStart } = visibility(tweensFor(`#${id}`));
+        if (entranceEnd != null) on = Math.max(on, entranceEnd);
+        if (exitStart != null) off = Math.min(off, exitStart);
+      }
+      const settled = Math.max(0, off - on);
+      const needed = Math.max(READ_FLOOR, READ_PER_WORD * r.words.length);
+      if (settled + 1e-9 < needed) late.push(`#${r.id} "${r.words.join(" ")}" settled ${settled.toFixed(2)}s, needs ${needed.toFixed(2)}s (${r.words.length} word${r.words.length === 1 ? "" : "s"})`);
+    }
+    const exempt = composition.readables.length - readable.length;
+    add("read time", late.length === 0, late.length ? late.join("; ") : `${readable.length} readable lines settle long enough at ${READ_PER_WORD}s per word, ${exempt} texture exempt`);
+  }
+
   return { pass: checks.every((c) => c.pass), checks };
+}
+
+export const READ_PER_WORD = 0.3;
+export const READ_FLOOR = 0.8;
+
+// A tween is an exit when the map's own samples show it taking the element below half
+// opacity. The entrance is the element's earliest non-exit tween plus any tween that starts
+// before that one ends; later non-exit tweens are state changes and do not unsettle a line.
+function visibility(tweens) {
+  const fades = (t) => {
+    const b = t.bboxes ?? [];
+    return b.length >= 2 && b[b.length - 1].opacity < 0.5 && b[b.length - 1].opacity < b[0].opacity;
+  };
+  const byStart = [...tweens].sort((a, b) => a.start - b.start);
+  const exits = byStart.filter(fades);
+  const rest = byStart.filter((t) => !fades(t));
+  const first = rest[0];
+  const entranceEnd = first ? Math.max(...rest.filter((t) => t.start < first.end).map((t) => t.end)) : null;
+  const exit = exits.find((t) => entranceEnd == null || t.start >= entranceEnd);
+  return { entranceEnd, exitStart: exit ? exit.start : null };
 }

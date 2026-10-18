@@ -283,8 +283,16 @@ for studio audio").
   may hold a static camera — the camera rule targets single-window screen-recording
   sameness, not composed diagram scenes.
 - ONE ease/spring system declared once and reused for every entrance. Staggered reveals
-  (nothing arrives all at once); revealed text holds long enough to read (~2.5s per
-  line).
+  (nothing arrives all at once).
+- **Text holds long enough to read.** Pace comes from motion and cuts, never from pulling
+  text away early. Any line the viewer is meant to read stays fully visible and settled
+  for 0.3s per word (never under 0.8s, even for a short label), counted from when the
+  whole line is on screen until its exit starts. The motion critic measures it: each text
+  element with an id (or inside one) is timed from the end of its own and its ancestors'
+  entrances to the first tween that fades it out, or to its clip's end (the next clip's
+  start when they overlap). Text that is only texture (a scrolling log, a background
+  grid of labels) is not meant to be read; stamp it `data-texture` on the element or a
+  wrapper and the critic skips it.
 - Accent color carries MEANING (the metric, the state change, the price, the CTA),
   never decoration. Count accent uses per frame against the brand's scarcity rule.
   **Logo/wordmark exemption:** a persistent logo or wordmark that carries the accent
@@ -320,8 +328,8 @@ for studio audio").
 - **Motion critic** (end of build, before render): `scripts/motion-floor.mjs`. A count, not
   an opinion: camera move per scene, declared rules that animate, distinct rules against the
   archetype floor, named transitions with overlap windows, a state change in every `[ui]`
-  beat, dead zones under the cap, and the animation map's own flags (offscreen, invisible,
-  degenerate, collision). The floor per archetype is in `references/style-archetypes.md`; a
+  beat, dead zones under the cap, read time on every line that is not `data-texture`, and
+  the animation map's own flags (offscreen, invisible, degenerate, collision). The floor per archetype is in `references/style-archetypes.md`; a
   brand may raise it in `motion-brand.md`'s Motion section and never lower it.
 
 ## Craft rules (earned in production; do not relearn them)

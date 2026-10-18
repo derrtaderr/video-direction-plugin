@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { parseComposition } from "./composition.mjs";
+import { parseComposition, parseReadables } from "./composition.mjs";
 
 const HTML = `
 <div id="root" data-width="1920" data-height="1080">
@@ -68,4 +68,32 @@ test("the feature-beat template is a stamped [ui] beat with a camera", () => {
   assert.ok(rules.includes("press-release-spring"));
   assert.ok(rules.includes("cursor-ui-demo"));
   assert.ok(rules.includes("cursor-click-ripple"));
+});
+
+test("readables: text belongs to its nearest id, with words and in-clip ancestors", () => {
+  const html = `<section id="beat-1" class="clip" data-start="0" data-duration="4"><div id="cam-beat-1" class="camera"><div id="card"><h2 id="title">Seedlings, <em>monthly</em>.</h2><p class="body">Fern &amp; Field ships them</p></div></div></section>`;
+  const readables = parseReadables(html);
+  assert.deepEqual(readables, [
+    { id: "title", clip: "beat-1", words: ["Seedlings,", "monthly"], ancestors: ["card"], texture: false },
+    { id: "card", clip: "beat-1", words: ["Fern", "Field", "ships", "them"], ancestors: [], texture: false },
+  ]);
+});
+
+test("readables: data-texture marks an element and everything inside it as texture", () => {
+  const html = `<section id="beat-1" class="clip" data-start="0" data-duration="4"><div id="ticker" data-texture><span id="t1">rows rows rows</span></div><h1 id="h1">Read me</h1></section>`;
+  const byId = Object.fromEntries(parseReadables(html).map((r) => [r.id, r]));
+  assert.equal(byId.t1.texture, true);
+  assert.equal(byId.h1.texture, false);
+});
+
+test("readables: text outside clips, in scripts and styles, and owned by no id is skipped", () => {
+  const html = `<div id="persistent">Fern and Field</div><style>.a { color: red }</style><section id="beat-1" class="clip" data-start="0" data-duration="4"><p>no owner here</p><script>const x = "words";</script><br/><img src="a.png"><h1 id="h1">Kept</h1></section>`;
+  assert.deepEqual(parseReadables(html).map((r) => [r.id, r.words]), [["h1", ["Kept"]]]);
+});
+
+test("readables: the feature-beat template's lines are all readable, none texture", () => {
+  const html = readFileSync(new URL("../../../templates/feature-beat/index.html", import.meta.url), "utf8");
+  const ids = parseReadables(html).map((r) => r.id);
+  assert.ok(ids.includes("headline"));
+  assert.ok(ids.includes("row-1"));
 });

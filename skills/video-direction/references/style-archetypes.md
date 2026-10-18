@@ -52,7 +52,8 @@ See the skill's **Structure check** section.
 - **Audio default:** VO-led, or a bed with captions where the words carry the mechanism.
 - **Signature moves (pick 2–3):** content-level motion (typing, line-draws, traveling
   chips between panels), one accent tracing the active path, a held frame at each step's
-  dwell so the eye can read it (~2.5s per line).
+  dwell so the eye can read it (0.3s per word once the line has settled, never under
+  0.8s; the motion critic measures it).
 - **Variant axes:** panel layout (stacked vs traveling), VO vs captions, step count (3 vs
   4), accent role (path-tracer vs state-marker).
 - **Motion floor:** `camera=every-scene; transitions=1; rules=4; state-change=ui-beats; dead-zone=0.08`

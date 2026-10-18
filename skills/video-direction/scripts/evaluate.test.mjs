@@ -146,3 +146,55 @@ test("a beat with no clip fails the camera check under a one-drift floor too", (
   assert.equal(r.pass, false);
   assert.match(r.checks.find((c) => c.name === "camera").evidence, /beat 2 has no clip id="beat-2"/);
 });
+
+// Read time: a line the viewer is meant to read stays settled (fully on screen, before its
+// exit starts) for 0.3s per word, never under 0.8s.
+const withReadables = (readables) => ({ ...composition, readables });
+const line = (id, clip, count, extra = {}) => ({ id, clip, words: Array.from({ length: count }, (_, i) => `w${i + 1}`), ancestors: [], texture: false, ...extra });
+const readTime = (r) => r.checks.find((c) => c.name === "read time");
+
+test("read time passes a line that settles long enough", () => {
+  // #h1 lands at 1.0s; beat 2 starts at 4.0s, so beat 1's text settles 3.0s: 10 words need 3.0s.
+  const r = evaluateFloor({ map: goodMap(), composition: withReadables([line("h1", "beat-1", 10)]), beats, floor: LAUNCH, vocabulary: VOCAB });
+  assert.equal(readTime(r).pass, true, readTime(r).evidence);
+  assert.equal(r.pass, true);
+});
+
+test("read time fails a line pulled before it can be read, naming id, words, settled and needed", () => {
+  const r = evaluateFloor({ map: goodMap(), composition: withReadables([line("h1", "beat-1", 12)]), beats, floor: LAUNCH, vocabulary: VOCAB });
+  assert.equal(r.pass, false);
+  assert.match(readTime(r).evidence, /#h1 "w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12" settled 3\.00s, needs 3\.60s \(12 words\)/);
+});
+
+test("read time holds even a short label for at least 0.8s", () => {
+  const map = goodMap();
+  map.tweens.push(tween("#tag", ["opacity"], 3.2, 3.5));
+  const r = evaluateFloor({ map, composition: withReadables([line("tag", "beat-1", 1)]), beats, floor: LAUNCH, vocabulary: VOCAB });
+  assert.match(readTime(r).evidence, /#tag "w1" settled 0\.50s, needs 0\.80s \(1 word\)/);
+});
+
+test("read time exempts texture", () => {
+  const r = evaluateFloor({ map: goodMap(), composition: withReadables([line("log", "beat-1", 60, { texture: true })]), beats, floor: LAUNCH, vocabulary: VOCAB });
+  assert.equal(readTime(r).pass, true);
+  assert.match(readTime(r).evidence, /1 texture exempt/);
+});
+
+test("read time ends at a tween that fades the line out, not at the clip end", () => {
+  const map = goodMap();
+  const fade = tween("#h1", ["opacity"], 2, 2.4);
+  fade.bboxes = [{ opacity: 1 }, { opacity: 0.4 }, { opacity: 0 }];
+  map.tweens.push(fade);
+  const r = evaluateFloor({ map, composition: withReadables([line("h1", "beat-1", 5)]), beats, floor: LAUNCH, vocabulary: VOCAB });
+  assert.match(readTime(r).evidence, /#h1 "w1 w2 w3 w4 w5" settled 1\.00s, needs 1\.50s/);
+});
+
+test("read time counts from when an ancestor's entrance finishes", () => {
+  const map = goodMap();
+  map.tweens.push(tween("#card", ["opacity", "y"], 5, 6.5));
+  const r = evaluateFloor({ map, composition: withReadables([line("row-1", "beat-2", 2, { ancestors: ["card"] })]), beats, floor: LAUNCH, vocabulary: VOCAB });
+  // beat 2's window ends at 8.0s (beat 3 starts), the card lands at 6.5s: 1.5s settled.
+  assert.equal(readTime(r).pass, true, readTime(r).evidence);
+  map.tweens.push(tween("#card", ["opacity"], 7.5, 7.9));
+  map.tweens[map.tweens.length - 1].bboxes = [{ opacity: 1 }, { opacity: 0 }];
+  assert.match(readTime(evaluateFloor({ map, composition: withReadables([line("row-1", "beat-2", 4, { ancestors: ["card"] })]), beats, floor: LAUNCH, vocabulary: VOCAB })).evidence, /#row-1 "w1 w2 w3 w4" settled 1\.00s, needs 1\.20s/);
+});

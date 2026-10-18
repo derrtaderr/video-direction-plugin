@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { parseVocabulary, VOCABULARY_PATH } from "./vocabulary.mjs";
 import { parseArchetypeFloors, parseBrandMotion, resolveFloor } from "./floors.mjs";
 import { parseBoards, lintChoreography } from "./boards.mjs";
-import { parseComposition } from "./composition.mjs";
+import { parseComposition, parseReadables } from "./composition.mjs";
 import { evaluateFloor } from "./evaluate.mjs";
 import { checkCoverage } from "./coverage.mjs";
 
@@ -121,7 +121,8 @@ async function main() {
   }
   if (measureNote) return finish(archetype, { pass: false, checks: [{ name: "measured", pass: false, evidence: measureNote }] }, { notes });
 
-  const composition = parseComposition(readFileSync(indexPath, "utf8"));
+  const html = readFileSync(indexPath, "utf8");
+  const composition = { ...parseComposition(html), readables: parseReadables(html) };
   const result = evaluateFloor({ map, composition, beats, floor, vocabulary });
   if (composition.problems?.length) result.checks.push({ name: "stamps without id", pass: false, evidence: composition.problems.join("; ") });
 
