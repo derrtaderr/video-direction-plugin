@@ -349,7 +349,10 @@ for studio audio").
   boundaries; total fits the runtime budget; the hook lands inside 2 seconds; and — for
   narrative styles — the story spine holds (read the beats as a chain, flag "and then"
   joins and evidence beats whose setup was cut). For static/stacked styles, check the
-  hierarchy instead: reading order and the punchline landing last.
+  hierarchy instead: reading order and the punchline landing last. Then the stranger
+  test, for every style: after one viewing, someone who has never heard of the thing
+  knows what it is, who it is for, and how to get it. A beat that assumes the viewer
+  already knows fails it.
 - **Motion critic** (end of build, before render): `scripts/motion-floor.mjs`. A count, not
   an opinion: camera move per scene, declared rules that animate, distinct rules against the
   archetype floor, named transitions with overlap windows, a state change in every `[ui]`
