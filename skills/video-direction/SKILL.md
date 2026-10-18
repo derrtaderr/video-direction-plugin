@@ -201,9 +201,11 @@ thinking it hung. Renders longer than ~60s should surface progress.
    Then run the blank-still gate:
    `node <plugin>/skills/video-direction/scripts/stills-check.mjs <the stills folder>`. A
    still that reads BLANK is a beat that rendered nothing; fix the composition and re-render
-   before presenting. A deliberate black hold is named with `--allow`. Pull the **poster** too — an ffmpeg still of the
-   boards' strongest beat (typically the resolve or hero moment), saved beside the MP4
-   in the piece's `renders/`. On a successful render, **append one row to the
+   before presenting. A deliberate black hold is named with `--allow`. Pull the **poster** too: the
+   HOLD still (`beat<n>-hold`) of the boards' strongest beat (typically the resolve or hero
+   moment), saved beside the MP4 in the piece's `renders/`. The poster is always a settled
+   frame, with its text fully in and no transition under way; never an in, out or
+   mid-transition still. On a successful render, **append one row to the
    project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
    Style, Audio, Camera, Hero techniques, New capabilities tried, Destinations, Perf
    note) — the piece's slug, its style and kind of audio/camera actually shipped, and
