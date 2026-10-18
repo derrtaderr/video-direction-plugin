@@ -38,7 +38,7 @@ there is nothing to install ahead of time beyond Node 22+ and ffmpeg.
 | 3. Boardomatic | The beat table drives the composition's timeline (clip timing, cuts on beat/VO boundaries). |
 | 3b. Choreography | Each beat's Camera / Entrance / State change / Transition out names a recipe: `hyperframes-animation` rules (`rules/<name>.md`), blueprints (`blueprints/<id>.md`) or a transition. The build instantiates exactly those. |
 | 4. Styleframes | Scaffold first (`npx hyperframes init` inside the piece's `composition/` folder — note `init` may nest a subfolder named after the project; check where it put the files and flatten them into `composition/` if it did), build the still frame, render it with `npx hyperframes snapshot` (skip `check` on deliberate stills — it flags motionless frames), then Read the image and art-direct it. |
-| 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. **Then run the motion critic, before any render:** `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece video-work/<slug> --brand motion-brand.md --ledger style-ledger.md` (the `<plugin>` root is the folder this SKILL.md lives two levels under). It runs the animation skill's animation-map on the composition and reconciles it against the beat table and the archetype's motion floor. `MOTION FLOOR <archetype>: FAIL` names the check and the beat that failed; fix the composition or the choreography columns and re-run. `not measured` is a fail, never a warning: a piece whose motion cannot be measured does not render. The first critic run may need to install the animation map's packages; it stops and names `HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1` when it does, and you re-run with that set. Announce the run; the map takes ~30-60s. |
+| 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. **Then run the motion critic, before any render:** `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece video-work/<slug> --brand motion-brand.md --ledger style-ledger.md` (the `<plugin>` root is the folder this SKILL.md lives two levels under). It runs the animation skill's animation-map on the composition and reconciles it against the beat table and the archetype's motion floor. `MOTION FLOOR <archetype>: FAIL` names the check and the beat that failed; fix the composition or the choreography columns and re-run. `not measured` is a fail, never a warning: a piece whose motion cannot be measured does not render. The first critic run may need to install the animation map's packages; it stops and names `HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1` when it does, and you re-run with that set. Announce the run; the map takes ~30-60s. **Then the caption gate** for any captioned piece: `node <plugin>/skills/video-direction/scripts/caption-check.mjs video-work/<slug>/composition` (pipeline step 5 has the rules). |
 | 6. QC | **Render with `npx hyperframes render`** for the MP4, then extract stills at each beat and at each transition's midpoint (`scripts/stills-plan.mjs` names the timestamps) and verify against the delivery spec. Then run the blank-still gate: `node <plugin>/skills/video-direction/scripts/stills-check.mjs <the stills folder>`. A still that reads BLANK is a beat that rendered nothing; fix the composition and re-render before presenting. A deliberate black hold is named with `--allow`. |
 
 If a HyperFrames command fails, re-run `npx hyperframes doctor` and `npx hyperframes
@@ -181,13 +181,22 @@ thinking it hung. Renders longer than ~60s should surface progress.
    picks it up. Else fall back to keyless-local (`npx hyperframes tts` / MusicGen) or
    silent per the brand file. Any generation failure falls back and never blocks the
    render. Record the mode that actually shipped (vo / music / silent) for QC.
-   **Before any render, two gates in this order.** First `npx hyperframes check`. Then the
+   **Before any render, three gates in this order.** First `npx hyperframes check`. Then the
    motion critic: `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece
    video-work/<slug> --brand motion-brand.md --ledger style-ledger.md`. A FAIL, including `not measured`, means the
    piece does not render; fix the composition or the choreography columns and re-run. The
    first critic run may need to install the animation map's packages; it stops and names
    `HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1` when it does, and you re-run with that set. The
-   handoff table's stage 5 row carries the full instruction.
+   handoff table's stage 5 row carries the full instruction. Then, for any piece with
+   captions, the caption gate: `node <plugin>/skills/video-direction/scripts/caption-check.mjs
+   video-work/<slug>/composition`. It seeks the composition every 0.25s and fails on any
+   element that draws (a prop, a sprite, a chart piece) under a visible caption. Captions are
+   found by `[data-caption], .caption, .cap`; pass `--caption <selector>` when the piece names
+   them otherwise. Mark a deliberate underlay, such as a floor rule the caption pill sits over,
+   with `data-caption-ok`. FAIL names the time and the element; move the set or the band and
+   re-run. `not measured` is a fail, and so is a PASS reporting 0 captioned samples on a
+   captioned piece (the selector missed). Why it exists: a film's caption sat on a prop through
+   a push-in, and the motion critic and the three-stills-per-beat pass both missed it.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract **three stills per beat**
    (its in, its hold, its out) plus **one still at the middle of every transition's
@@ -353,6 +362,8 @@ for studio audio").
   test, for every style: after one viewing, someone who has never heard of the thing
   knows what it is, who it is for, and how to get it. A beat that assumes the viewer
   already knows fails it.
+- **Caption gate** (end of build, before render): `scripts/caption-check.mjs`. Geometry, not
+  an opinion: no drawn element under a visible caption at any 0.25s sample.
 - **Motion critic** (end of build, before render): `scripts/motion-floor.mjs`. A count, not
   an opinion: camera move per scene, declared rules that animate, distinct rules against the
   archetype floor, named transitions with overlap windows, a state change in every `[ui]`

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      body { margin: 0; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      .world { position: absolute; inset: 0; background: #141414; }
+      #prop { position: absolute; left: 860px; top: 300px; width: 200px; height: 140px; background: #f97316; }
+      #floor { position: absolute; left: 0; right: 0; top: 950px; height: 4px; background: #444; }
+      .cap { position: absolute; left: 0; right: 0; top: 900px; text-align: center; font: 600 40px sans-serif; }
+      .cap span { background: #000; color: #fff; padding: 10px 24px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="3">
+      <section id="beat-1" class="clip" data-start="0" data-duration="3" data-track-index="1">
+        <div class="world"></div>
+        <div id="floor" data-caption-ok></div>
+        <div id="prop"></div>
+        <div class="cap"><span>The caption sits in its band.</span></div>
+      </section>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.to("#prop", { top: 880, duration: 1, ease: "none" }, 1).to("#prop", { opacity: 1, duration: 1 }, 2);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
