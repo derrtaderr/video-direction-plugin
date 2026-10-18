@@ -88,7 +88,11 @@ per beat:
 - **Role** — narrative styles: the story-spine role (setup / turn / transfer / bridge /
   evidence / thesis / resolve). Static styles: the zone or reading-order position.
 - **Content** — what is on screen. **Begin the cell with `[ui]` when the beat shows an
-  interface**; that marker is what the motion floor reads.
+  interface**; that marker is what the motion floor reads. A real interface never shows
+  real private data (secrets, API keys, tokens, internal hostnames or URLs, real customer
+  or user names, emails, other personal data): swap in plausible fictional stand-ins and
+  list each swap under the table, e.g. "beat 2: customer names and emails replaced with
+  fictional ones".
 - **Camera, Entrance, State change, Transition out** — filled at **stage 3b** by the Motion
   Designer, every cell a name from `references/motion-vocabulary.md`. `hold`, `none` and `cut`
   are names too; a piece never uses `hold` in every camera cell or `cut` at every boundary,

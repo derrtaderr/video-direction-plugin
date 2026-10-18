@@ -318,6 +318,11 @@ for studio audio").
   State the resolution; do not leave two accents competing.
 - Text on screen follows the brand's voice/type rules. Numbers shown must be true and
   sourced from the request or the brand's verified materials — never invented.
+- **No real private data, anywhere.** Never carry secrets, API keys, tokens, internal
+  hostnames or URLs, real customer or user names, email addresses, or other personal data
+  into the treatment, the boards, the composition or the render. When a real interface
+  (a `[ui]` beat, a screenshot, a recording) shows such data, swap in plausible fictional
+  stand-ins and note each swap under the beat table in `boards.md`.
 - Deterministic and seek-safe: single paused timeline, hard-set state at every scene
   boundary, no wall-clock or randomness.
 - **No muddy double exposures.** A plain crossfade between two busy layouts stacks both
