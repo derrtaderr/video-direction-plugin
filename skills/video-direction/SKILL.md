@@ -39,7 +39,7 @@ there is nothing to install ahead of time beyond Node 22+ and ffmpeg.
 | 3b. Choreography | Each beat's Camera / Entrance / State change / Transition out names a recipe: `hyperframes-animation` rules (`rules/<name>.md`), blueprints (`blueprints/<id>.md`) or a transition. The build instantiates exactly those. |
 | 4. Styleframes | Scaffold first (`npx hyperframes init` inside the piece's `composition/` folder — note `init` may nest a subfolder named after the project; check where it put the files and flatten them into `composition/` if it did), build the still frame, render it with `npx hyperframes snapshot` (skip `check` on deliberate stills — it flags motionless frames), then Read the image and art-direct it. |
 | 5. Build | Write the HyperFrames composition (the `index.html` with `class="clip"` elements and `data-*` timing attributes). Invoke the `hyperframes` authoring skills for the composition contract. Once your own `index.html` stands, delete the scaffold's example sub-compositions (`compositions/*.html`) it no longer references — `check` scans them anyway, and their errors muddy yours. **Then verify with `npx hyperframes check`** before rendering — it catches timing, font, and determinism errors, and its output now speaks only about files you wrote. **Then run the motion critic, before any render:** `node <plugin>/skills/video-direction/scripts/motion-floor.mjs --piece video-work/<slug> --brand motion-brand.md --ledger style-ledger.md` (the `<plugin>` root is the folder this SKILL.md lives two levels under). It runs the animation skill's animation-map on the composition and reconciles it against the beat table and the archetype's motion floor. `MOTION FLOOR <archetype>: FAIL` names the check and the beat that failed; fix the composition or the choreography columns and re-run. `not measured` is a fail, never a warning: a piece whose motion cannot be measured does not render. The first critic run may need to install the animation map's packages; it stops and names `HYPERFRAMES_SKILL_BOOTSTRAP_DEPS=1` when it does, and you re-run with that set. Announce the run; the map takes ~30-60s. |
-| 6. QC | **Render with `npx hyperframes render`** for the MP4, then extract stills at each beat and verify against the delivery spec. Then run the blank-still gate: `node <plugin>/skills/video-direction/scripts/stills-check.mjs <the stills folder>`. A still that reads BLANK is a beat that rendered nothing; fix the composition and re-render before presenting. A deliberate black hold is named with `--allow`. |
+| 6. QC | **Render with `npx hyperframes render`** for the MP4, then extract stills at each beat and at each transition's midpoint (`scripts/stills-plan.mjs` names the timestamps) and verify against the delivery spec. Then run the blank-still gate: `node <plugin>/skills/video-direction/scripts/stills-check.mjs <the stills folder>`. A still that reads BLANK is a beat that rendered nothing; fix the composition and re-render before presenting. A deliberate black hold is named with `--allow`. |
 
 If a HyperFrames command fails, re-run `npx hyperframes doctor` and `npx hyperframes
 check`, and report the finding with its fix rather than a raw stack trace. Note:
@@ -190,8 +190,15 @@ thinking it hung. Renders longer than ~60s should surface progress.
    handoff table's stage 5 row carries the full instruction.
 6. **QC** — (after QC closes, fire the consent-gated telemetry events per `references/telemetry.md` — render_complete on success, render_failed on a failed run; silent no-op without consent) — render the MP4, verify against the delivery spec (duration, aspect, size,
    captions where words carry, hook inside 2s), and extract **three stills per beat**
-   (its in, its hold, its out) onto the contact sheet, so the review sees the motion and
-   not the pose, and to confirm the frames match the boards. Then run the blank-still gate:
+   (its in, its hold, its out) plus **one still at the middle of every transition's
+   overlap window** onto the contact sheet, so the review sees the motion and not the
+   pose, and to confirm the frames match the boards. The timestamps come from
+   `node <plugin>/skills/video-direction/scripts/stills-plan.mjs video-work/<slug>/composition/index.html`,
+   which prints one `name<TAB>seconds` line per still (`beat1-hold`, `beat1-to-2-mid`);
+   pull each with `ffmpeg -ss <seconds> -i <the MP4> -frames:v 1 <stills folder>/<name>.png`.
+   Read every mid-transition still for overflow, collisions, low contrast and a muddy
+   double exposure (see the build contract) and fix the composition before presenting.
+   Then run the blank-still gate:
    `node <plugin>/skills/video-direction/scripts/stills-check.mjs <the stills folder>`. A
    still that reads BLANK is a beat that rendered nothing; fix the composition and re-render
    before presenting. A deliberate black hold is named with `--allow`. Pull the **poster** too — an ffmpeg still of the
@@ -306,6 +313,10 @@ for studio audio").
   sourced from the request or the brand's verified materials — never invented.
 - Deterministic and seek-safe: single paused timeline, hard-set state at every scene
   boundary, no wall-clock or randomness.
+- **No muddy double exposures.** A plain crossfade between two busy layouts stacks both
+  at half opacity and reads as mud. Stagger it (the old content leaves, then the new
+  content arrives) or dip through the background between them. The mid-transition still
+  QC pulls is where this is checked.
 - Camera and content tweens on the same element in the same window read as a collision in
   the animation map. Put the camera move on the camera wrapper and content motion on
   children, and stagger arrivals.
@@ -315,7 +326,9 @@ for studio audio").
 - **Look critic** (after styleframes): anti-slop checklist — static centered window that
   never moves, style drift between scenes, default-font reflexes, decoration-only
   accent, more than the brand's allowed accent per frame, containers nested more than
-  ~2 deep, off-register energy. Compare the frame side-by-side with the style's canon
+  ~2 deep, off-register energy, and (once the mid-transition stills exist) a crossfade
+  between two busy layouts that reads as a double exposure instead of staggering or
+  dipping through the background. Compare the frame side-by-side with the style's canon
   reference if one is named (canon references live in `references/canon-deck.md` — the
   teardown for the archetype the piece anchors to), and against the brand constants, and
   name which anchor was used when the archetype has both a restrained and a **high-motion**

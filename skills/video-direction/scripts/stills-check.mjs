@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // skills/video-direction/scripts/stills-check.mjs
-// The blank-still gate. QC already extracts three stills per beat (in, hold, out); this
-// makes looking at them mechanical instead of relying on someone opening every PNG. A
-// still whose luma never varies is a beat that rendered nothing, whatever hyperframes
-// check and the motion critic say.
+// The blank-still gate. QC already extracts three stills per beat (in, hold, out) and one
+// at each transition's midpoint (stills-plan.mjs); this makes looking at them mechanical
+// instead of relying on someone opening every PNG. A still whose luma never varies is a
+// beat that rendered nothing, whatever hyperframes check and the motion critic say.
 // Usage: node stills-check.mjs <dir> [--min-range 8] [--allow <glob-or-name>...]
 import { readdirSync, statSync, existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
