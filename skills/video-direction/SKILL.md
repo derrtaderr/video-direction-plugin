@@ -205,7 +205,12 @@ thinking it hung. Renders longer than ~60s should surface progress.
    HOLD still (`beat<n>-hold`) of the boards' strongest beat (typically the resolve or hero
    moment), saved beside the MP4 in the piece's `renders/`. The poster is always a settled
    frame, with its text fully in and no transition under way; never an in, out or
-   mid-transition still. On a successful render, **append one row to the
+   mid-transition still. Then bake it in as the MP4's first frame, because feeds and
+   players use the first frame as the thumbnail:
+   `node <plugin>/skills/video-direction/scripts/bake-poster.mjs renders/<file>.mp4 renders/poster.jpg`.
+   It replaces frame 0 rather than adding one, so the frame count, duration and audio sync
+   stay as rendered; it probes before and after and keeps the original if anything moved.
+   On a successful render, **append one row to the
    project's `style-ledger.md`** using the template's exact columns (Date, Video, Tier,
    Style, Audio, Camera, Hero techniques, New capabilities tried, Destinations, Perf
    note) — the piece's slug, its style and kind of audio/camera actually shipped, and
