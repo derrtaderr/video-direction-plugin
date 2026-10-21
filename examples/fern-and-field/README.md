@@ -1,25 +1,31 @@
 # Example — Fern & Field
 
 A worked example that ships with the plugin. **Fern & Field** is a fictional native-plant
-garden-supply company, used to show a complete `motion-brand.md` and a sample video made by
-following the `video-direction` skill end to end.
+garden-supply company. It shows a complete `motion-brand.md` and three videos made from it
+by following the `video-direction` skill end to end, each one varied against the last by the
+style ledger.
 
-- **`motion-brand.md`** — a filled brand file in the current template contract: five sections,
-  all five style archetypes tuned to the brand, the audio line (silent permitted), and the
-  logo/wordmark accent-exemption resolved.
-- **`style-ledger.md`** — the brand's ledger with its one real row (the sample render), plus
-  an observation the next video's style pick should weigh. This is the file the skill reads
-  at stage 2 and appends to at QC.
-- **`sample-video.mp4`** — a ~11s square Launch Card (Announcement Card archetype) for the
-  Seedling Subscription. Silent per the brand's audio line. Reads with sound off.
-- **`video-work/seedling-subscription-launch/`** — the intermediates the skill produced:
-  treatment, style, boards, styleframes, and the HyperFrames composition. They show the
-  six-stage process, not just the result.
+| Video | Style | Sound | Folder |
+|---|---|---|---|
+| The Seedling Subscription, 31s | Launch Film (flagship) | voiceover over a scored folk bed, captions | [`video-work/seedling-subscription-film/`](video-work/seedling-subscription-film/) |
+| From seed to your porch, 28s | Mechanism Explainer | folk bed, captions as narrator | [`video-work/plug-to-porch/`](video-work/plug-to-porch/) |
+| Seedling Subscription card, 11s | Announcement Card | silent, per the brand's audio line | [`video-work/seedling-subscription-launch/`](video-work/seedling-subscription-launch/) |
+
+Each folder holds the whole run, not just the result: `treatment.md`, `style.md`,
+`boards.md` (the beat table with its choreography columns), `styleframes/`, the HyperFrames
+`composition/`, and `renders/` with the final MP4 and its poster. The launch film's
+`styleframes/PICK.md` records the A/B hero pick and why.
+
+- **`motion-brand.md`** — the brand file: five sections, all five style archetypes tuned to
+  the brand, the audio line, and the logo/wordmark accent exemption resolved.
+- **`style-ledger.md`** — one row per shipped video. The skill reads it at stage 2 to vary
+  the look and appends to it at QC. Its observations name what the next video should do
+  differently.
+- **`sample-video.mp4`** — the first card, kept at the top level as the original sample.
 
 **Try it:** copy `motion-brand.md` into your own project root and ask for a video ("make a
-launch card for X"). The `video-direction` skill reads the brand file and runs the stages.
+launch film for X"). The `video-direction` skill reads the brand file and runs the stages.
 
-**What the sample shows:** one held frame with a top-down reading order, a single sprouting
-charm animation, the fern-green accent reserved for the price (the punchline lands last), and
-the green handed off to the wordmark "&" on the final resolve frame — one accent per frame,
-never two.
+**Audio.** The two narrated pieces were scored with the ElevenLabs tier
+(`references/audio-elevenlabs.md`), using the author's own key. Without a key the skill
+falls back to local keyless models or silence, per the brand's audio line.

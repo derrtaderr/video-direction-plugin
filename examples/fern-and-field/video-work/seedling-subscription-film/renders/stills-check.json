@@ -1,0 +1,95 @@
+{
+  "dir": "renders/stills",
+  "minRange": 8,
+  "allow": [],
+  "results": [
+    {
+      "name": "beat1-hold.png",
+      "range": 186,
+      "status": "ok"
+    },
+    {
+      "name": "beat1-in.png",
+      "range": 148,
+      "status": "ok"
+    },
+    {
+      "name": "beat1-out.png",
+      "range": 183,
+      "status": "ok"
+    },
+    {
+      "name": "beat1-to-2-mid.png",
+      "range": 33,
+      "status": "ok"
+    },
+    {
+      "name": "beat2-hold.png",
+      "range": 169,
+      "status": "ok"
+    },
+    {
+      "name": "beat2-in.png",
+      "range": 170,
+      "status": "ok"
+    },
+    {
+      "name": "beat2-out.png",
+      "range": 169,
+      "status": "ok"
+    },
+    {
+      "name": "beat3-hold.png",
+      "range": 194,
+      "status": "ok"
+    },
+    {
+      "name": "beat3-in.png",
+      "range": 137,
+      "status": "ok"
+    },
+    {
+      "name": "beat3-out.png",
+      "range": 191,
+      "status": "ok"
+    },
+    {
+      "name": "beat4-hold.png",
+      "range": 193,
+      "status": "ok"
+    },
+    {
+      "name": "beat4-in.png",
+      "range": 195,
+      "status": "ok"
+    },
+    {
+      "name": "beat4-out.png",
+      "range": 192,
+      "status": "ok"
+    },
+    {
+      "name": "beat4-to-5-mid.png",
+      "range": 18,
+      "status": "ok"
+    },
+    {
+      "name": "beat5-hold.png",
+      "range": 181,
+      "status": "ok"
+    },
+    {
+      "name": "beat5-in.png",
+      "range": 183,
+      "status": "ok"
+    },
+    {
+      "name": "beat5-out.png",
+      "range": 181,
+      "status": "ok"
+    }
+  ],
+  "pass": true,
+  "blankCount": 0,
+  "at": "2026-10-21T01:06:13.762Z"
+}

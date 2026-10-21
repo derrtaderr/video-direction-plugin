@@ -24,7 +24,8 @@ test('the promise is the first prose line above the fold', () => {
   assert.equal(fold[first].trim(), PROMISE);
 });
 
-const IMAGE = /!\[[^\]]+\]\(([^)\s]+)\)/;
+// A markdown image or an HTML <img> (the hero can be a side-by-side table of two GIFs).
+const IMAGE = /!\[[^\]]+\]\(([^)\s]+)\)|<img\b[^>]*\bsrc="([^"]+)"/;
 const MAX_BYTES = 5 * 1024 * 1024;
 
 test('a committed visual under 5 MB follows the promise', () => {
@@ -32,10 +33,12 @@ test('a committed visual under 5 MB follows the promise', () => {
   const imageAt = indexOf((l) => IMAGE.test(l));
   assert.notEqual(imageAt, -1, 'no image above the fold');
   assert.ok(imageAt > promiseAt, 'image must come after the promise');
-  const src = fold[imageAt].match(IMAGE)[1];
-  assert.ok(!/^https?:/.test(src), 'image must be committed in the repo, not hotlinked');
-  const size = statSync(join(ROOT, src)).size;
-  assert.ok(size > 0 && size < MAX_BYTES, `${src} is ${size} bytes, must be under 5 MB`);
+  const srcs = fold.slice(imageAt).flatMap((l) => [...l.matchAll(new RegExp(IMAGE, 'g'))].map((m) => m[1] ?? m[2]));
+  for (const src of srcs) {
+    assert.ok(!/^https?:/.test(src), 'image must be committed in the repo, not hotlinked');
+    const size = statSync(join(ROOT, src)).size;
+    assert.ok(size > 0 && size < MAX_BYTES, `${src} is ${size} bytes, must be under 5 MB`);
+  }
 });
 
 const REPO_SLUG = 'derrtaderr/video-direction-plugin';

@@ -15,13 +15,14 @@
 //              caption pill sits over) with `data-caption-ok`; it and its children are skipped.
 //
 // Usage: node caption-check.mjs <composition dir> [--caption <selector>] [--step 0.25]
-//        [--width 1920] [--height 1080] [--animation-map <path to animation-map.mjs>]
+//        [--width <px>] [--height <px>] [--animation-map <path to animation-map.mjs>]
+//        (width and height default to the root's data-width/data-height, else 1920x1080)
 // Exit 0 PASS, 1 FAIL, 2 not measured (a gate that cannot measure is a fail, never a warning).
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
-import { sampleTimes, judgeSamples, intersects, paintsItself, isBackdrop } from "./caption-check-core.mjs";
+import { sampleTimes, judgeSamples, intersects, paintsItself, isBackdrop, compositionSize } from "./caption-check-core.mjs";
 
 const argv = process.argv.slice(2);
 const opt = (name, dflt) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : dflt; };
@@ -30,11 +31,12 @@ if (!compArg) { console.error("usage: caption-check.mjs <composition dir> [--cap
 const COMP = resolve(compArg);
 const CAPTION = opt("--caption", "[data-caption], .caption, .cap");
 const STEP = Number(opt("--step", 0.25));
-const W = Number(opt("--width", 1920));
-const H = Number(opt("--height", 1080));
-
 const notMeasured = (why) => { console.log(`CAPTION CHECK: not measured  ${why}`); process.exit(2); };
 if (!existsSync(join(COMP, "index.html"))) notMeasured(`no index.html in ${COMP}`);
+// The frame size comes from the composition's root unless a flag overrides it.
+const declared = compositionSize(readFileSync(join(COMP, "index.html"), "utf8"));
+const W = Number(opt("--width", declared?.width ?? 1920));
+const H = Number(opt("--height", declared?.height ?? 1080));
 
 // The browser comes from the animation skill's HyperFrames loader, the same one the motion
 // critic's animation map uses, so there is nothing new to install.

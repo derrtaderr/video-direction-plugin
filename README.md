@@ -2,9 +2,18 @@
 
 A Claude Code plugin that gives AI-made brand videos a director, so they stop looking generic.
 
-[![An 11 second launch card the plugin directed for Fern and Field, a fictional demo brand](docs/media/fern-and-field-launch-card.gif)](examples/fern-and-field/)
+<table>
+  <tr>
+    <td width="50%"><a href="examples/fern-and-field/video-work/seedling-subscription-film/"><img src="docs/media/fern-and-field-launch-film.gif" alt="A 31 second launch film for the Seedling Subscription by Fern and Field, a fictional native-plant brand. A meadow of native plants, a garden-center shelf of identical pots, a coneflower revealed in its shipping box, a calendar of twelve species, and a dark closing frame with the price." width="100%"></a></td>
+    <td width="50%"><a href="examples/fern-and-field/video-work/plug-to-porch/"><img src="docs/media/fern-and-field-explainer.gif" alt="A 28 second explainer for Fern and Field. A route map traces seed, grow, ship and plant while a seed tray fills, plugs grow under a crossing sun, one plug is sleeved and boxed, and it ends planted in a garden bed." width="100%"></a></td>
+  </tr>
+  <tr>
+    <td><sub><b>Launch Film</b> · 31s · voiceover and a scored bed</sub></td>
+    <td><sub><b>Mechanism Explainer</b> · 28s · captions over a bed, no voice</sub></td>
+  </tr>
+</table>
 
-<sub>An 11 second launch card the plugin directed end to end for Fern and Field, a fictional demo brand. The full render and every stage behind it live in <a href="examples/fern-and-field/">examples/fern-and-field</a>.</sub>
+<sub>Two videos for one fictional brand, Fern and Field, each directed end to end by the plugin from the same brand file. The second had to look different from the first because the brand's style ledger said so. The GIFs are silent previews; the MP4s with sound, and every stage behind them, live in <a href="examples/fern-and-field/">examples/fern-and-field</a>.</sub>
 
 Install it with two commands inside Claude Code. In Claude Cowork, add it from the plugins screen instead.
 
@@ -25,6 +34,30 @@ change and transition from a motion vocabulary; a motion critic measures the com
 before it renders and fails it under the archetype's floor; and each new video has to reach
 for moves the brand has not used in its last two. The result is videos that read as
 designed rather than assembled.
+
+## Behind the cut
+
+Each frame below is a decision the process forced before the final render.
+
+<table>
+  <tr>
+    <td width="25%"><img src="docs/media/behind-styleframe-a.jpg" alt="Styleframe A, the centered title over the open box" width="100%"></td>
+    <td width="25%"><img src="docs/media/behind-styleframe-b.jpg" alt="Styleframe B, the title set left and running into the box flap" width="100%"></td>
+    <td width="25%"><img src="docs/media/behind-transition-before.jpg" alt="A mid-transition frame where the meadow and the shelf overlap at half opacity" width="100%"></td>
+    <td width="25%"><img src="docs/media/behind-transition-after.jpg" alt="The same moment after the fix, a clean hand-off between scenes" width="100%"></td>
+  </tr>
+  <tr>
+    <td><sub><b>Styleframe A, picked.</b> The hero frame is rendered two ways and judged against a reference film before anything moves.</sub></td>
+    <td><sub><b>Styleframe B, rejected.</b> The title runs into the box flap, and the bloom would drift off the line the camera pulls back on.</sub></td>
+    <td><sub><b>Caught in QC.</b> The stills pulled at every transition's midpoint showed two scenes stacked at half opacity, a muddy double exposure.</sub></td>
+    <td><sub><b>Fixed.</b> The old scene now leaves before the new one arrives. Before either film could render, the motion critic failed this one once and the explainer twice.</sub></td>
+  </tr>
+</table>
+
+The style ledger then pushed the second video away from the first on every axis they
+share: captions instead of a voice, panels that hold while the content moves instead of a
+traveling camera, and the accent tracing a path instead of marking a word. Read the ledger
+at [`examples/fern-and-field/style-ledger.md`](examples/fern-and-field/style-ledger.md).
 
 ## Install
 

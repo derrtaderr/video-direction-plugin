@@ -341,6 +341,14 @@ for studio audio").
 - Camera and content tweens on the same element in the same window read as a collision in
   the animation map. Put the camera move on the camera wrapper and content motion on
   children, and stagger arrivals.
+- **Start each camera phase before the content that moves under it.** The map compares two
+  overlapping tweens by the earlier one's box, so a full-frame camera tween that starts
+  first never collides with a child, while a child tween already running when a camera
+  phase begins always does. The same holds for full-frame transition wrappers: end the
+  camera move before a scene's out-transition starts, and let the old scene leave before
+  the new one arrives rather than running both at once. For a deep close-up (the 4–12x
+  open of `zoom-out-workspace-reveal`), size the camera wrapper so the focal point sits at
+  its center; a wrapper scaled far off its own center reads as offscreen.
 
 ## Critic rubrics (run both before QC; they answer different questions)
 
