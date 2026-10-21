@@ -47,3 +47,17 @@ export function judgeSamples(samples) {
   const note = captioned ? "" : "no caption was visible at any sample; check the --caption selector if the piece has captions";
   return { pass: fails.length === 0, captioned, fails, note };
 }
+
+// The frame size the composition declares on its root (the element carrying
+// data-composition-id). The gate measures backdrops as a share of the frame, so a square piece
+// judged against a 1920x1080 default would treat its own full-frame background as a prop.
+export function compositionSize(html) {
+  for (const m of html.matchAll(/<[a-zA-Z][\w-]*\b([^>]*)>/g)) {
+    const attrs = m[1];
+    if (!/\bdata-composition-id\s*=/.test(attrs)) continue;
+    const w = attrs.match(/\bdata-width\s*=\s*"(\d+)"/);
+    const h = attrs.match(/\bdata-height\s*=\s*"(\d+)"/);
+    return w && h ? { width: Number(w[1]), height: Number(h[1]) } : null;
+  }
+  return null;
+}

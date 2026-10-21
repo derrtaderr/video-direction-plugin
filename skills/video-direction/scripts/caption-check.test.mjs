@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { intersects, sampleTimes, judgeSamples, paintsItself, isBackdrop } from "./caption-check-core.mjs";
+import { intersects, sampleTimes, judgeSamples, paintsItself, isBackdrop, compositionSize } from "./caption-check-core.mjs";
 
 const cap = { left: 600, right: 1320, top: 900, bottom: 980 };
 
@@ -55,4 +55,14 @@ test("isBackdrop exempts anything covering most of the frame", () => {
   const frame = { width: 1920, height: 1080 };
   assert.equal(isBackdrop({ left: 0, right: 1920, top: 0, bottom: 1080 }, frame), true);
   assert.equal(isBackdrop({ left: 100, right: 600, top: 800, bottom: 1000 }, frame), false);
+});
+
+test("compositionSize reads the root's data-width and data-height, so a square piece is measured as square", () => {
+  const html = `<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1080" data-duration="11"></div>`;
+  assert.deepEqual(compositionSize(html), { width: 1080, height: 1080 });
+});
+
+test("compositionSize returns null when the root declares no size, so the caller keeps its default", () => {
+  assert.equal(compositionSize(`<div id="root" data-composition-id="main"></div>`), null);
+  assert.equal(compositionSize(`<section class="clip" data-width="500" data-height="500"></section>`), null);
 });
