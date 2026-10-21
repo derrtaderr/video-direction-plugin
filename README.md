@@ -1,6 +1,15 @@
-# Video Direction
+<a id="video-direction"></a>
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/video-direction-wordmark-dark.png"><img src="docs/media/video-direction-wordmark-light.png" alt="video-direction" width="420"></picture>
+</p>
 
+<p align="center">
 A Claude Code plugin that gives AI-made brand videos a director, so they stop looking generic.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin-F97316" alt="A Claude Code plugin"> <img src="https://img.shields.io/badge/version-0.3.1-8B949E" alt="Version 0.3.1"> <img src="https://img.shields.io/badge/renders%20with-HyperFrames-8B949E" alt="Renders with HyperFrames"> <img src="https://img.shields.io/badge/node-%E2%89%A522-339933?logo=nodedotjs&logoColor=white" alt="Node 22 or newer">
+</p>
 
 <table>
   <tr>
